@@ -1,0 +1,49 @@
+{
+  "query": "SHOW CREATE TABLE invoices;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SHOW CREATE TABLE invoices;",
+  "rows": [
+    {
+      "Table": "invoices",
+      "Create Table": "CREATE TABLE `invoices` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `organization_id` int(11) DEFAULT '1',",
+    "  `userId` int(11) NOT NULL,",
+    "  `projectId` int(11) NOT NULL,",
+    "  `budgetLineId` int(11) DEFAULT NULL,",
+    "  `sessionId` int(11) DEFAULT NULL,",
+    "  `amount` decimal(10,2) NOT NULL,",
+    "  `invoiceNumber` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `fileUrl` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `budgetLineCategory` enum('coordinator_fee','facilitator_fee','venue_hire','monitoring_evaluation','contingency','management_fee') COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `status` enum('draft','pending','approved','rejected','paid') COLLATE utf8mb4_unicode_ci DEFAULT 'draft',",
+    "  `submittedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `approvedAt` timestamp NULL DEFAULT NULL,",
+    "  `approvedBy` int(11) DEFAULT NULL,",
+    "  `paidAt` timestamp NULL DEFAULT NULL,",
+    "  `rejectionReason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `aiCategorized` tinyint(1) NOT NULL DEFAULT '0',",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  `totalAmount` decimal(10,2) NOT NULL DEFAULT '0',",
+    "  `paidAmount` decimal(10,2) NOT NULL DEFAULT '0',",
+    "  `dueDate` timestamp NULL DEFAULT NULL,",
+    "  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `admin_comments` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `invoice_number` int(11) DEFAULT NULL,",
+    "  `invoice_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `auto_generated` tinyint(1) DEFAULT '0',",
+    "  `adminComments` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `rejectedAt` timestamp NULL DEFAULT NULL,",
+    "  `rejectedBy` int(11) DEFAULT NULL,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  KEY `idx_organization` (`organization_id`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=30001"
+  ],
+  "stdout": "Table\tCreate Table\ninvoices\tCREATE TABLE `invoices` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `organization_id` int(11) DEFAULT '1',\n  `userId` int(11) NOT NULL,\n  `projectId` int(11) NOT NULL,\n  `budgetLineId` int(11) DEFAULT NULL,\n  `sessionId` int(11) DEFAULT NULL,\n  `amount` decimal(10,2) NOT NULL,\n  `invoiceNumber` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `fileUrl` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `budgetLineCategory` enum('coordinator_fee','facilitator_fee','venue_hire','monitoring_evaluation','contingency','management_fee') COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` enum('draft','pending','approved','rejected','paid') COLLATE utf8mb4_unicode_ci DEFAULT 'draft',\n  `submittedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `approvedAt` timestamp NULL DEFAULT NULL,\n  `approvedBy` int(11) DEFAULT NULL,\n  `paidAt` timestamp NULL DEFAULT NULL,\n  `rejectionReason` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `aiCategorized` tinyint(1) NOT NULL DEFAULT '0',\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `totalAmount` decimal(10,2) NOT NULL DEFAULT '0',\n  `paidAmount` decimal(10,2) NOT NULL DEFAULT '0',\n  `dueDate` timestamp NULL DEFAULT NULL,\n  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `admin_comments` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `invoice_number` int(11) DEFAULT NULL,\n  `invoice_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `auto_generated` tinyint(1) DEFAULT '0',\n  `adminComments` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `rejectedAt` timestamp NULL DEFAULT NULL,\n  `rejectedBy` int(11) DEFAULT NULL,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  KEY `idx_organization` (`organization_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=30001\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

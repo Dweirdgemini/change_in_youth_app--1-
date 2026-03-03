@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, name, email, role, organization_id FROM users ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id, name, email, role, organization_id FROM users ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "deji",
+      "email": "deji@changeinyouth.org.uk",
+      "role": "admin",
+      "organization_id": "1"
+    },
+    {
+      "id": "270007",
+      "name": "Deji Adeoshun",
+      "email": "dejiadeoshun@gmail.com",
+      "role": "admin",
+      "organization_id": "1"
+    },
+    {
+      "id": "330220",
+      "name": "Admin Test User",
+      "email": "admin@changeinyouth.org",
+      "role": "admin",
+      "organization_id": "1"
+    },
+    {
+      "id": "540001",
+      "name": "Test Performance User",
+      "email": "performance@test.com",
+      "role": "facilitator",
+      "organization_id": "1"
+    },
+    {
+      "id": "540003",
+      "name": "Test Performance User",
+      "email": "performance-1768204078412@test.com",
+      "role": "facilitator",
+      "organization_id": "1"
+    },
+    {
+      "id": "540004",
+      "name": "Test Performance User",
+      "email": "performance-1768204105093@test.com",
+      "role": "facilitator",
+      "organization_id": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\torganization_id\n1\tdeji\tdeji@changeinyouth.org.uk\tadmin\t1\n270007\tDeji Adeoshun\tdejiadeoshun@gmail.com\tadmin\t1\n330220\tAdmin Test User\tadmin@changeinyouth.org\tadmin\t1\n540001\tTest Performance User\tperformance@test.com\tfacilitator\t1\n540003\tTest Performance User\tperformance-1768204078412@test.com\tfacilitator\t1\n540004\tTest Performance User\tperformance-1768204105093@test.com\tfacilitator\t1\n",
+  "stderr": "",
+  "execution_time_ms": 74
+}

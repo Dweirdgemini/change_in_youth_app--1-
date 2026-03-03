@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE consent_forms \nADD COLUMN IF NOT EXISTS schoolName VARCHAR(255) NOT NULL DEFAULT '',\nADD COLUMN IF NOT EXISTS yearGroup VARCHAR(50);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute ALTER TABLE consent_forms \nADD COLUMN IF NOT EXISTS schoolName VARCHAR(255) NOT NULL DEFAULT '',\nADD COLUMN IF NOT EXISTS yearGroup VARCHAR(50);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 926
+}

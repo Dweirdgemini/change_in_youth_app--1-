@@ -1,0 +1,16 @@
+{
+  "query": "SELECT tc.id, tc.name, cm.user_id, cm.channel_id \nFROM team_channels tc \nLEFT JOIN channel_members cm ON tc.id = cm.channel_id \nWHERE tc.name = 'Team Chat';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT tc.id, tc.name, cm.user_id, cm.channel_id \nFROM team_channels tc \nLEFT JOIN channel_members cm ON tc.id = cm.channel_id \nWHERE tc.name = 'Team Chat';",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Team Chat",
+      "user_id": "1",
+      "channel_id": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tuser_id\tchannel_id\n1\tTeam Chat\t1\t1\n",
+  "stderr": "",
+  "execution_time_ms": 118
+}

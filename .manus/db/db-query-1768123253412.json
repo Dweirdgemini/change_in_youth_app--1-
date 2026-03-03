@@ -1,0 +1,9 @@
+{
+  "query": "\n-- Change In Youth (Enterprise tier - all features)\nINSERT INTO organization_features (organization_id, feature_slug, enabled) VALUES\n(1, 'core', TRUE),\n(1, 'team_management', TRUE),\n(1, 'finance', TRUE),\n(1, 'analytics', TRUE),\n(1, 'video_meetings', TRUE),\n(1, 'team_rankings', TRUE),\n(1, 'social_media', TRUE);\n\n-- Account Hackney (Professional tier - core + team + finance)\nINSERT INTO organization_features (organization_id, feature_slug, enabled) VALUES\n(2, 'core', TRUE),\n(2, 'team_management', TRUE),\n(2, 'finance', TRUE);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute \n-- Change In Youth (Enterprise tier - all features)\nINSERT INTO organization_features (organization_id, feature_slug, enabled) VALUES\n(1, 'core', TRUE),\n(1, 'team_management', TRUE),\n(1, 'finance', TRUE),\n(1, 'analytics', TRUE),\n(1, 'video_meetings', TRUE),\n(1, 'team_rankings', TRUE),\n(1, 'social_media', TRUE);\n\n-- Account Hackney (Professional tier - core + team + finance)\nINSERT INTO organization_features (organization_id, feature_slug, enabled) VALUES\n(2, 'core', TRUE),\n(2, 'team_management', TRUE),\n(2, 'finance', TRUE);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 460
+}

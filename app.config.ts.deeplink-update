@@ -1,0 +1,62 @@
+/**
+ * DEEP LINKING CONFIGURATION FOR MAGIC LINKS
+ * 
+ * Add this to your app.config.ts intentFilters section (Android) and associated domains (iOS)
+ * 
+ * For Android, add to the existing intentFilters array:
+ */
+
+// Android Intent Filter for Magic Links
+{
+  action: "VIEW",
+  autoVerify: true,
+  data: [
+    {
+      scheme: env.scheme,  // e.g., "manus20240115103045"
+      host: "*",
+    },
+    {
+      scheme: "https",
+      host: "changeinyouth.app",
+      pathPrefix: "/auth/magic-link",
+    },
+  ],
+  category: ["BROWSABLE", "DEFAULT"],
+}
+
+/**
+ * For iOS, add to the plugins section:
+ * 
+ * [
+ *   "expo-router",
+ *   {
+ *     "associatedDomains": ["applinks:changeinyouth.app"]
+ *   }
+ * ]
+ * 
+ * And configure your domain's apple-app-site-association file:
+ * https://changeinyouth.app/.well-known/apple-app-site-association
+ * 
+ * {
+ *   "applinks": {
+ *     "apps": [],
+ *     "details": [
+ *       {
+ *         "appID": "TEAM_ID.BUNDLE_ID",
+ *         "paths": ["/auth/magic-link"]
+ *       }
+ *     ]
+ *   }
+ * }
+ */
+
+/**
+ * EXPO ROUTER LINKING CONFIGURATION
+ * 
+ * This is handled automatically by Expo Router with the route:
+ * app/magic-link-callback.tsx
+ * 
+ * The route will match:
+ * - manus20240115103045://auth/magic-link?token=<TOKEN>
+ * - https://changeinyouth.app/auth/magic-link?token=<TOKEN>
+ */

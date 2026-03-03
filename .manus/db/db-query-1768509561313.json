@@ -1,0 +1,16 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME LIKE '%attend%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME LIKE '%attend%';",
+  "rows": [
+    {
+      "TABLE_NAME": "video_call_attendance"
+    },
+    {
+      "TABLE_NAME": "meeting_attendance"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\nvideo_call_attendance\nmeeting_attendance\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

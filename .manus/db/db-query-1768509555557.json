@@ -1,0 +1,16 @@
+{
+  "query": "SHOW TABLES LIKE '%attend%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SHOW TABLES LIKE '%attend%';",
+  "rows": [
+    {
+      "Tables_in_JfuWbL5SX5FRFCFWK9F3WU (%attend%)": "meeting_attendance"
+    },
+    {
+      "Tables_in_JfuWbL5SX5FRFCFWK9F3WU (%attend%)": "video_call_attendance"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_JfuWbL5SX5FRFCFWK9F3WU (%attend%)\nmeeting_attendance\nvideo_call_attendance\n",
+  "stderr": "",
+  "execution_time_ms": 47
+}

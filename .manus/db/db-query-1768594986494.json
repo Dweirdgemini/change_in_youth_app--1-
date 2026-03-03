@@ -1,0 +1,61 @@
+{
+  "query": "SELECT * FROM users WHERE role = 'admin' LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM users WHERE role = 'admin' LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "organization_id": "1",
+      "openId": "oJr2X4NtyhdpJDLbQvy53o",
+      "name": "deji",
+      "email": "deji@changeinyouth.org.uk",
+      "profileImageUrl": "NULL",
+      "loginMethod": "oauth",
+      "role": "admin",
+      "createdAt": "2026-01-09 21:26:58",
+      "updatedAt": "2026-01-16 14:03:17",
+      "lastSignedIn": "2026-01-16 14:03:17",
+      "pushToken": "NULL",
+      "ranking": "standard",
+      "canPostJobs": "0",
+      "notificationPreferences": "NULL"
+    },
+    {
+      "id": "270007",
+      "organization_id": "1",
+      "openId": "Wcwk26iDQKUtJQeznfB8oB",
+      "name": "Deji Adeoshun",
+      "email": "dejiadeoshun@gmail.com",
+      "profileImageUrl": "NULL",
+      "loginMethod": "google",
+      "role": "admin",
+      "createdAt": "2026-01-10 18:46:58",
+      "updatedAt": "2026-01-11 09:12:30",
+      "lastSignedIn": "2026-01-11 09:12:31",
+      "pushToken": "NULL",
+      "ranking": "standard",
+      "canPostJobs": "0",
+      "notificationPreferences": "NULL"
+    },
+    {
+      "id": "330220",
+      "organization_id": "1",
+      "openId": "admin_test_001",
+      "name": "Admin Test User",
+      "email": "admin@changeinyouth.org",
+      "profileImageUrl": "NULL",
+      "loginMethod": "email",
+      "role": "admin",
+      "createdAt": "2026-01-10 23:51:49",
+      "updatedAt": "2026-01-10 23:51:49",
+      "lastSignedIn": "2026-01-10 23:51:49",
+      "pushToken": "NULL",
+      "ranking": "standard",
+      "canPostJobs": "0",
+      "notificationPreferences": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\torganization_id\topenId\tname\temail\tprofileImageUrl\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\tpushToken\tranking\tcanPostJobs\tnotificationPreferences\n1\t1\toJr2X4NtyhdpJDLbQvy53o\tdeji\tdeji@changeinyouth.org.uk\tNULL\toauth\tadmin\t2026-01-09 21:26:58\t2026-01-16 14:03:17\t2026-01-16 14:03:17\tNULL\tstandard\t0\tNULL\n270007\t1\tWcwk26iDQKUtJQeznfB8oB\tDeji Adeoshun\tdejiadeoshun@gmail.com\tNULL\tgoogle\tadmin\t2026-01-10 18:46:58\t2026-01-11 09:12:30\t2026-01-11 09:12:31\tNULL\tstandard\t0\tNULL\n330220\t1\tadmin_test_001\tAdmin Test User\tadmin@changeinyouth.org\tNULL\temail\tadmin\t2026-01-10 23:51:49\t2026-01-10 23:51:49\t2026-01-10 23:51:49\tNULL\tstandard\t0\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 365
+}

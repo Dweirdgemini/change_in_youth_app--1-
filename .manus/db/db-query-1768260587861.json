@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE organizations ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT FALSE NOT NULL;\nALTER TABLE organizations ADD COLUMN IF NOT EXISTS onboarding_step INT DEFAULT 0;\nINSERT INTO organizations (id, name, slug, billing_email, subscription_tier, subscription_status, max_users, onboarding_completed)\nVALUES (1, 'Change In Youth CIC', 'change-in-youth', 'admin@changeinyouth.app', 'enterprise', 'active', 999, TRUE)\nON DUPLICATE KEY UPDATE name='Change In Youth CIC';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute ALTER TABLE organizations ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT FALSE NOT NULL;\nALTER TABLE organizations ADD COLUMN IF NOT EXISTS onboarding_step INT DEFAULT 0;\nINSERT INTO organizations (id, name, slug, billing_email, subscription_tier, subscription_status, max_users, onboarding_completed)\nVALUES (1, 'Change In Youth CIC', 'change-in-youth', 'admin@changeinyouth.app', 'enterprise', 'active', 999, TRUE)\nON DUPLICATE KEY UPDATE name='Change In Youth CIC';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 862
+}

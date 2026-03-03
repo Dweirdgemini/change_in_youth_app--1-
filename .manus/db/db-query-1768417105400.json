@@ -1,0 +1,80 @@
+{
+  "query": "SELECT id, name, description, created_by, created_at FROM team_chat_channels ORDER BY created_at DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id, name, description, created_by, created_at FROM team_chat_channels ORDER BY created_at DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "60004",
+      "name": "we won well done",
+      "description": "hallelujah",
+      "created_by": "999",
+      "created_at": "2026-01-14 14:09:54"
+    },
+    {
+      "id": "60003",
+      "name": "bb  b",
+      "description": "b bv",
+      "created_by": "999",
+      "created_at": "2026-01-14 13:57:49"
+    },
+    {
+      "id": "60002",
+      "name": "v vv",
+      "description": "bv  bbv",
+      "created_by": "999",
+      "created_at": "2026-01-14 13:55:10"
+    },
+    {
+      "id": "30002",
+      "name": "slmfclm",
+      "description": ",cd cvdm",
+      "created_by": "1",
+      "created_at": "2026-01-14 09:24:36"
+    },
+    {
+      "id": "13",
+      "name": "222",
+      "description": "2222",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:22:43"
+    },
+    {
+      "id": "12",
+      "name": "11",
+      "description": "111",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:10:35"
+    },
+    {
+      "id": "11",
+      "name": "1000",
+      "description": "1000",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:07:47"
+    },
+    {
+      "id": "10",
+      "name": "3000",
+      "description": "soon",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:06:07"
+    },
+    {
+      "id": "9",
+      "name": "hardlife",
+      "description": "3000",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:03:40"
+    },
+    {
+      "id": "8",
+      "name": "movie",
+      "description": "hiphop",
+      "created_by": "1",
+      "created_at": "2026-01-13 23:00:15"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tcreated_by\tcreated_at\n60004\twe won well done\thallelujah\t999\t2026-01-14 14:09:54\n60003\tbb  b\tb bv\t999\t2026-01-14 13:57:49\n60002\tv vv\tbv  bbv\t999\t2026-01-14 13:55:10\n30002\tslmfclm\t,cd cvdm\t1\t2026-01-14 09:24:36\n13\t222\t2222\t1\t2026-01-13 23:22:43\n12\t11\t111\t1\t2026-01-13 23:10:35\n11\t1000\t1000\t1\t2026-01-13 23:07:47\n10\t3000\tsoon\t1\t2026-01-13 23:06:07\n9\thardlife\t3000\t1\t2026-01-13 23:03:40\n8\tmovie\thiphop\t1\t2026-01-13 23:00:15\n",
+  "stderr": "",
+  "execution_time_ms": 692
+}

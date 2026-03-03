@@ -1,0 +1,19 @@
+{
+  "query": "SELECT * FROM team_chat_channels WHERE id = 60004;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM team_chat_channels WHERE id = 60004;",
+  "rows": [
+    {
+      "id": "60004",
+      "name": "we won well done",
+      "description": "hallelujah",
+      "created_by": "999",
+      "created_at": "2026-01-14 14:09:54",
+      "updated_at": "2026-01-14 14:09:54",
+      "last_message_at": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tcreated_by\tcreated_at\tupdated_at\tlast_message_at\n60004\twe won well done\thallelujah\t999\t2026-01-14 14:09:54\t2026-01-14 14:09:54\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

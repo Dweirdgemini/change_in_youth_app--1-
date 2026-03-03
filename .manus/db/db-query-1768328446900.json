@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO team_chat_channels (id, name, description, created_by) \nVALUES (1, 'Team Chat', 'General team communication', 999)\nON DUPLICATE KEY UPDATE name = name;\n\nINSERT INTO team_chat_members (channel_id, user_id) \nVALUES (1, 999)\nON DUPLICATE KEY UPDATE joined_at = joined_at;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute INSERT INTO team_chat_channels (id, name, description, created_by) \nVALUES (1, 'Team Chat', 'General team communication', 999)\nON DUPLICATE KEY UPDATE name = name;\n\nINSERT INTO team_chat_members (channel_id, user_id) \nVALUES (1, 999)\nON DUPLICATE KEY UPDATE joined_at = joined_at;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 85
+}

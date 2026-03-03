@@ -1,0 +1,80 @@
+{
+  "query": "SELECT * FROM meeting_requests ORDER BY created_at DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM meeting_requests ORDER BY created_at DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "13",
+      "requested_by": "1",
+      "title": "Can you fix it",
+      "description": "yes you can",
+      "requested_date": "2026-01-15 09:19:05",
+      "duration_minutes": "60",
+      "status": "pending",
+      "reviewed_by": "NULL",
+      "reviewed_at": "NULL",
+      "admin_notes": "NULL",
+      "session_id": "NULL",
+      "created_at": "2026-01-15 09:19:41"
+    },
+    {
+      "id": "12",
+      "requested_by": "1",
+      "title": "Can you fix it",
+      "description": "yes you can",
+      "requested_date": "2026-01-15 09:19:05",
+      "duration_minutes": "60",
+      "status": "pending",
+      "reviewed_by": "NULL",
+      "reviewed_at": "NULL",
+      "admin_notes": "NULL",
+      "session_id": "NULL",
+      "created_at": "2026-01-15 09:19:29"
+    },
+    {
+      "id": "11",
+      "requested_by": "1",
+      "title": "Can you fix it",
+      "description": "yes you can",
+      "requested_date": "2026-01-15 09:19:05",
+      "duration_minutes": "60",
+      "status": "pending",
+      "reviewed_by": "NULL",
+      "reviewed_at": "NULL",
+      "admin_notes": "NULL",
+      "session_id": "NULL",
+      "created_at": "2026-01-15 09:19:26"
+    },
+    {
+      "id": "10",
+      "requested_by": "1",
+      "title": "TINY",
+      "description": "TINY",
+      "requested_date": "2026-01-15 09:13:47",
+      "duration_minutes": "60",
+      "status": "pending",
+      "reviewed_by": "NULL",
+      "reviewed_at": "NULL",
+      "admin_notes": "NULL",
+      "session_id": "NULL",
+      "created_at": "2026-01-15 09:14:00"
+    },
+    {
+      "id": "9",
+      "requested_by": "1",
+      "title": "yoyoyoy",
+      "description": "yoyoyoyoyo",
+      "requested_date": "2026-01-15 09:09:01",
+      "duration_minutes": "60",
+      "status": "pending",
+      "reviewed_by": "NULL",
+      "reviewed_at": "NULL",
+      "admin_notes": "NULL",
+      "session_id": "NULL",
+      "created_at": "2026-01-15 09:13:03"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\trequested_by\ttitle\tdescription\trequested_date\tduration_minutes\tstatus\treviewed_by\treviewed_at\tadmin_notes\tsession_id\tcreated_at\n13\t1\tCan you fix it\tyes you can\t2026-01-15 09:19:05\t60\tpending\tNULL\tNULL\tNULL\tNULL\t2026-01-15 09:19:41\n12\t1\tCan you fix it\tyes you can\t2026-01-15 09:19:05\t60\tpending\tNULL\tNULL\tNULL\tNULL\t2026-01-15 09:19:29\n11\t1\tCan you fix it\tyes you can\t2026-01-15 09:19:05\t60\tpending\tNULL\tNULL\tNULL\tNULL\t2026-01-15 09:19:26\n10\t1\tTINY\tTINY\t2026-01-15 09:13:47\t60\tpending\tNULL\tNULL\tNULL\tNULL\t2026-01-15 09:14:00\n9\t1\tyoyoyoy\tyoyoyoyoyo\t2026-01-15 09:09:01\t60\tpending\tNULL\tNULL\tNULL\tNULL\t2026-01-15 09:13:03\n",
+  "stderr": "",
+  "execution_time_ms": 115
+}

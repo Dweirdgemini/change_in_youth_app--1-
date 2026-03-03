@@ -1,0 +1,11 @@
+{
+  "query": "-- Verify organizations table exists\nSELECT * FROM organizations;\n\n-- Create Account Hackney test organization if it doesn't exist\nINSERT INTO organizations (name, slug, billing_email, subscription_tier, subscription_status, max_users, onboarding_completed, onboarding_step)\nVALUES ('Account Hackney (Test)', 'account-hackney-test', 'test@accounthackney.org', 'trial', 'trial', 10, FALSE, 1)\nON DUPLICATE KEY UPDATE name=name;\n\n-- Verify both organizations exist\nSELECT id, name, slug, subscription_tier, subscription_status, max_users, onboarding_completed FROM organizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute -- Verify organizations table exists\nSELECT * FROM organizations;\n\n-- Create Account Hackney test organization if it doesn't exist\nINSERT INTO organizations (name, slug, billing_email, subscription_tier, subscription_status, max_users, onboarding_completed, onboarding_step)\nVALUES ('Account Hackney (Test)', 'account-hackney-test', 'test@accounthackney.org', 'trial', 'trial', 10, FALSE, 1)\nON DUPLICATE KEY UPDATE name=name;\n\n-- Verify both organizations exist\nSELECT id, name, slug, subscription_tier, subscription_status, max_users, onboarding_completed FROM organizations;",
+  "returncode": 1,
+  "logs": [
+    "id\tname\tslug\tlogo_url\tprimary_color\tsubscription_tier\tsubscription_status\ttrial_ends_at\tbilling_email\tmax_users\tsettings\tcreated_at\tupdated_at\tonboarding_completed\tonboarding_step",
+    "1\tChange In Youth CIC\tchange-in-youth\t\t#0a7ea4\tenterprise\tactive\tNULL\tadmin@changeinyouth.org\t999\tNULL\t2026-01-11 09:20:24\t2026-01-11 09:20:24\t0\t0",
+    "2\tAccount Hackney\taccount-hackney\t\t#0a7ea4\tprofessional\ttrial\t2026-02-10 09:20:24\tadmin@accounthackney.org\t25\tNULL\t2026-01-11 09:20:24\t2026-01-11 09:20:24\t0\t0",
+    "ERROR 1265 (01000) at line 5: Data truncated for column 'subscription_tier' at row 1"
+  ]
+}

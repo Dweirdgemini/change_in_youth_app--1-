@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as total_forms FROM consent_forms;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT COUNT(*) as total_forms FROM consent_forms;",
+  "rows": [
+    {
+      "total_forms": "6"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_forms\n6\n",
+  "stderr": "",
+  "execution_time_ms": 82
+}

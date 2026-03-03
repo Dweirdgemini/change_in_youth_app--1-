@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS dbs_records (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  user_id INT NOT NULL,\n  certificate_number VARCHAR(255) NOT NULL,\n  dbs_type ENUM('basic', 'standard', 'enhanced', 'enhanced_barred') NOT NULL DEFAULT 'enhanced',\n  issue_date DATE NOT NULL,\n  expiry_date DATE NOT NULL,\n  status ENUM('valid', 'expiring_soon', 'expired', 'pending') NOT NULL DEFAULT 'valid',\n  certificate_url TEXT,\n  notes TEXT,\n  renewal_period_years INT NOT NULL DEFAULT 3,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute CREATE TABLE IF NOT EXISTS dbs_records (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  user_id INT NOT NULL,\n  certificate_number VARCHAR(255) NOT NULL,\n  dbs_type ENUM('basic', 'standard', 'enhanced', 'enhanced_barred') NOT NULL DEFAULT 'enhanced',\n  issue_date DATE NOT NULL,\n  expiry_date DATE NOT NULL,\n  status ENUM('valid', 'expiring_soon', 'expired', 'pending') NOT NULL DEFAULT 'valid',\n  certificate_url TEXT,\n  notes TEXT,\n  renewal_period_years INT NOT NULL DEFAULT 3,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 425
+}

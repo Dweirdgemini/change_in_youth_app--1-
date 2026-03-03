@@ -1,0 +1,43 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%invoice%' OR TABLE_NAME LIKE '%session%') ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%invoice%' OR TABLE_NAME LIKE '%session%') ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "invoice_counter"
+    },
+    {
+      "TABLE_NAME": "invoice_line_items"
+    },
+    {
+      "TABLE_NAME": "invoice_template_items"
+    },
+    {
+      "TABLE_NAME": "invoice_templates"
+    },
+    {
+      "TABLE_NAME": "invoices"
+    },
+    {
+      "TABLE_NAME": "session_content"
+    },
+    {
+      "TABLE_NAME": "session_facilitators"
+    },
+    {
+      "TABLE_NAME": "session_feedback"
+    },
+    {
+      "TABLE_NAME": "session_types"
+    },
+    {
+      "TABLE_NAME": "sessions"
+    },
+    {
+      "TABLE_NAME": "user_sessions"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\ninvoice_counter\ninvoice_line_items\ninvoice_template_items\ninvoice_templates\ninvoices\nsession_content\nsession_facilitators\nsession_feedback\nsession_types\nsessions\nuser_sessions\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

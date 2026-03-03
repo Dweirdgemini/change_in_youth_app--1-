@@ -1,0 +1,9 @@
+{
+  "query": "\n-- Add organization_id to projects\nALTER TABLE projects ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE projects ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to sessions\nALTER TABLE sessions ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE sessions ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to invoices\nALTER TABLE invoices ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE invoices ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to budget_lines\nALTER TABLE budget_lines ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE budget_lines ADD INDEX idx_organization (organization_id);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute \n-- Add organization_id to projects\nALTER TABLE projects ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE projects ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to sessions\nALTER TABLE sessions ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE sessions ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to invoices\nALTER TABLE invoices ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE invoices ADD INDEX idx_organization (organization_id);\n\n-- Add organization_id to budget_lines\nALTER TABLE budget_lines ADD COLUMN organization_id INT DEFAULT 1 AFTER id;\nALTER TABLE budget_lines ADD INDEX idx_organization (organization_id);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 4115
+}

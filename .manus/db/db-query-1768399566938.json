@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM team_chat_channels LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM team_chat_channels LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Team Chat",
+      "description": "General team communication",
+      "created_by": "999",
+      "created_at": "2026-01-13 22:21:27",
+      "updated_at": "2026-01-13 22:21:27"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tcreated_by\tcreated_at\tupdated_at\n1\tTeam Chat\tGeneral team communication\t999\t2026-01-13 22:21:27\t2026-01-13 22:21:27\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

@@ -1,0 +1,24 @@
+{
+  "query": "SELECT \n  i.id, i.invoiceNumber, i.invoice_code as invoiceCode, i.amount, i.status, \n  i.userId, u.name as userName, u.email as userEmail,\n  i.projectId, p.name as projectName, i.submittedAt, i.description\nFROM invoices i\nLEFT JOIN users u ON i.userId = u.id\nLEFT JOIN projects p ON i.projectId = p.id\nWHERE i.auto_generated = 1 AND i.status = 'pending'\nORDER BY i.invoiceNumber ASC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT \n  i.id, i.invoiceNumber, i.invoice_code as invoiceCode, i.amount, i.status, \n  i.userId, u.name as userName, u.email as userEmail,\n  i.projectId, p.name as projectName, i.submittedAt, i.description\nFROM invoices i\nLEFT JOIN users u ON i.userId = u.id\nLEFT JOIN projects p ON i.projectId = p.id\nWHERE i.auto_generated = 1 AND i.status = 'pending'\nORDER BY i.invoiceNumber ASC;",
+  "rows": [
+    {
+      "id": "30001",
+      "invoiceNumber": "CIY2026-001",
+      "invoiceCode": "NULL",
+      "amount": "75.00",
+      "status": "pending",
+      "userId": "1",
+      "userName": "deji",
+      "userEmail": "deji@changeinyouth.org.uk",
+      "projectId": "150006",
+      "projectName": "Test Invoice Project",
+      "submittedAt": "2026-01-15 22:42:47",
+      "description": "Invoice #1 - 1 activities"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tinvoiceNumber\tinvoiceCode\tamount\tstatus\tuserId\tuserName\tuserEmail\tprojectId\tprojectName\tsubmittedAt\tdescription\n30001\tCIY2026-001\tNULL\t75.00\tpending\t1\tdeji\tdeji@changeinyouth.org.uk\t150006\tTest Invoice Project\t2026-01-15 22:42:47\tInvoice #1 - 1 activities\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

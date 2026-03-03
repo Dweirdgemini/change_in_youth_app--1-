@@ -1,0 +1,34 @@
+{
+  "query": "SELECT id, projectId, childFullName, schoolName, parentGuardianEmail, submittedAt FROM consent_forms ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id, projectId, childFullName, schoolName, parentGuardianEmail, submittedAt FROM consent_forms ORDER BY id DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "3",
+      "projectId": "1",
+      "childFullName": "Deji Adeoshun",
+      "schoolName": "Wanstead",
+      "parentGuardianEmail": "ayodeji_adeoshun@hotmail.co.uk",
+      "submittedAt": "2026-01-13 12:44:02"
+    },
+    {
+      "id": "2",
+      "projectId": "1",
+      "childFullName": "Deji Adeoshun",
+      "schoolName": "Wanstead",
+      "parentGuardianEmail": "ayodeji_adeoshun@hotmail.co.uk",
+      "submittedAt": "2026-01-13 12:44:01"
+    },
+    {
+      "id": "1",
+      "projectId": "1",
+      "childFullName": "Deji Adeoshun",
+      "schoolName": "Wanstead",
+      "parentGuardianEmail": "ayodeji_adeoshun@hotmail.co.uk",
+      "submittedAt": "2026-01-13 12:44:00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tprojectId\tchildFullName\tschoolName\tparentGuardianEmail\tsubmittedAt\n3\t1\tDeji Adeoshun\tWanstead\tayodeji_adeoshun@hotmail.co.uk\t2026-01-13 12:44:02\n2\t1\tDeji Adeoshun\tWanstead\tayodeji_adeoshun@hotmail.co.uk\t2026-01-13 12:44:01\n1\t1\tDeji Adeoshun\tWanstead\tayodeji_adeoshun@hotmail.co.uk\t2026-01-13 12:44:00\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

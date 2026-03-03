@@ -1,0 +1,55 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'job_postings' AND TABLE_SCHEMA = DATABASE();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'job_postings' AND TABLE_SCHEMA = DATABASE();",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "title"
+    },
+    {
+      "COLUMN_NAME": "description"
+    },
+    {
+      "COLUMN_NAME": "location"
+    },
+    {
+      "COLUMN_NAME": "job_type"
+    },
+    {
+      "COLUMN_NAME": "salary"
+    },
+    {
+      "COLUMN_NAME": "requirements"
+    },
+    {
+      "COLUMN_NAME": "responsibilities"
+    },
+    {
+      "COLUMN_NAME": "status"
+    },
+    {
+      "COLUMN_NAME": "posted_by"
+    },
+    {
+      "COLUMN_NAME": "closing_date"
+    },
+    {
+      "COLUMN_NAME": "view_count"
+    },
+    {
+      "COLUMN_NAME": "application_count"
+    },
+    {
+      "COLUMN_NAME": "created_at"
+    },
+    {
+      "COLUMN_NAME": "updated_at"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\ntitle\ndescription\nlocation\njob_type\nsalary\nrequirements\nresponsibilities\nstatus\nposted_by\nclosing_date\nview_count\napplication_count\ncreated_at\nupdated_at\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  c.id, \n  c.name, \n  c.description,\n  COUNT(m.user_id) as member_count,\n  GROUP_CONCAT(m.user_id) as member_ids\nFROM team_chat_channels c\nLEFT JOIN team_chat_members m ON m.channel_id = c.id\nGROUP BY c.id, c.name, c.description;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT \n  c.id, \n  c.name, \n  c.description,\n  COUNT(m.user_id) as member_count,\n  GROUP_CONCAT(m.user_id) as member_ids\nFROM team_chat_channels c\nLEFT JOIN team_chat_members m ON m.channel_id = c.id\nGROUP BY c.id, c.name, c.description;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Team Chat",
+      "description": "General team communication",
+      "member_count": "1",
+      "member_ids": "999"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\tmember_count\tmember_ids\n1\tTeam Chat\tGeneral team communication\t1\t999\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

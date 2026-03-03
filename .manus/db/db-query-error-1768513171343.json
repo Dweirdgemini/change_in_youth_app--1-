@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE users SET role = 'team_member' WHERE role = 'facilitator';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute UPDATE users SET role = 'team_member' WHERE role = 'facilitator';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1265 (01000) at line 1: Data truncated for column '%s' at row %d"
+  ]
+}

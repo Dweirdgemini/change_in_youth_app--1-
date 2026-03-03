@@ -1,0 +1,60 @@
+{
+  "query": "SELECT id, name, description FROM projects LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id, name, description FROM projects LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Company Reserves",
+      "description": "Company reserves for payments not tied to specific projects"
+    },
+    {
+      "id": "30001",
+      "name": "Tree of Life Hackney",
+      "description": "Tree of Life program in Hackney"
+    },
+    {
+      "id": "30002",
+      "name": "Positive ID I AM Brent",
+      "description": "Positive ID I AM program in Brent"
+    },
+    {
+      "id": "30003",
+      "name": "Positive ID Westminster",
+      "description": "Positive ID program in Westminster"
+    },
+    {
+      "id": "30004",
+      "name": "Social Media Preneur",
+      "description": "Social Media Preneur program"
+    },
+    {
+      "id": "30005",
+      "name": "Mind Like A Pro",
+      "description": "Mind Like A Pro program"
+    },
+    {
+      "id": "60001",
+      "name": "Positive ID I AM Brent",
+      "description": "Identity and confidence building program for young people in Brent"
+    },
+    {
+      "id": "60002",
+      "name": "Positive ID Westminster",
+      "description": "Westminster borough identity development program"
+    },
+    {
+      "id": "60003",
+      "name": "Social Media Preneur",
+      "description": "Social media entrepreneurship training for young people"
+    },
+    {
+      "id": "60004",
+      "name": "Mind Like A Pro",
+      "description": "Mental health and wellbeing program"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tdescription\n1\tCompany Reserves\tCompany reserves for payments not tied to specific projects\n30001\tTree of Life Hackney\tTree of Life program in Hackney\n30002\tPositive ID I AM Brent\tPositive ID I AM program in Brent\n30003\tPositive ID Westminster\tPositive ID program in Westminster\n30004\tSocial Media Preneur\tSocial Media Preneur program\n30005\tMind Like A Pro\tMind Like A Pro program\n60001\tPositive ID I AM Brent\tIdentity and confidence building program for young people in Brent\n60002\tPositive ID Westminster\tWestminster borough identity development program\n60003\tSocial Media Preneur\tSocial media entrepreneurship training for young people\n60004\tMind Like A Pro\tMental health and wellbeing program\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

@@ -1,0 +1,26 @@
+{
+  "query": "SELECT * FROM users LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM users LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "organization_id": "1",
+      "openId": "oJr2X4NtyhdpJDLbQvy53o",
+      "name": "deji",
+      "email": "deji@changeinyouth.org.uk",
+      "profileImageUrl": "NULL",
+      "loginMethod": "oauth",
+      "role": "admin",
+      "createdAt": "2026-01-09 21:26:58",
+      "updatedAt": "2026-01-15 22:47:56",
+      "lastSignedIn": "2026-01-15 22:47:56",
+      "pushToken": "NULL",
+      "ranking": "standard",
+      "canPostJobs": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\torganization_id\topenId\tname\temail\tprofileImageUrl\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\tpushToken\tranking\tcanPostJobs\n1\t1\toJr2X4NtyhdpJDLbQvy53o\tdeji\tdeji@changeinyouth.org.uk\tNULL\toauth\tadmin\t2026-01-09 21:26:58\t2026-01-15 22:47:56\t2026-01-15 22:47:56\tNULL\tstandard\t0\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

@@ -1,0 +1,61 @@
+{
+  "query": "SELECT id FROM team_chat_channels;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id FROM team_chat_channels;",
+  "rows": [
+    {
+      "id": "1"
+    },
+    {
+      "id": "2"
+    },
+    {
+      "id": "3"
+    },
+    {
+      "id": "4"
+    },
+    {
+      "id": "5"
+    },
+    {
+      "id": "6"
+    },
+    {
+      "id": "7"
+    },
+    {
+      "id": "8"
+    },
+    {
+      "id": "9"
+    },
+    {
+      "id": "10"
+    },
+    {
+      "id": "11"
+    },
+    {
+      "id": "12"
+    },
+    {
+      "id": "13"
+    },
+    {
+      "id": "30002"
+    },
+    {
+      "id": "60002"
+    },
+    {
+      "id": "60003"
+    },
+    {
+      "id": "60004"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n30002\n60002\n60003\n60004\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

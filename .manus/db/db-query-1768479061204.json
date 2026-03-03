@@ -1,0 +1,19 @@
+{
+  "query": "SELECT mr.id, mr.title, mr.requested_by, mr.requested_date, mr.duration_minutes, mr.status,\n  GROUP_CONCAT(mrp.user_id) as participant_ids\nFROM meeting_requests mr\nLEFT JOIN meeting_request_participants mrp ON mr.id = mrp.meeting_request_id\nWHERE mr.id = (SELECT MAX(id) FROM meeting_requests)\nGROUP BY mr.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT mr.id, mr.title, mr.requested_by, mr.requested_date, mr.duration_minutes, mr.status,\n  GROUP_CONCAT(mrp.user_id) as participant_ids\nFROM meeting_requests mr\nLEFT JOIN meeting_request_participants mrp ON mr.id = mrp.meeting_request_id\nWHERE mr.id = (SELECT MAX(id) FROM meeting_requests)\nGROUP BY mr.id;",
+  "rows": [
+    {
+      "id": "180002",
+      "title": "session 4",
+      "requested_by": "1",
+      "requested_date": "2026-01-15 12:07:07",
+      "duration_minutes": "60",
+      "status": "pending",
+      "participant_ids": "540003,540004"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\trequested_by\trequested_date\tduration_minutes\tstatus\tparticipant_ids\n180002\tsession 4\t1\t2026-01-15 12:07:07\t60\tpending\t540003,540004\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

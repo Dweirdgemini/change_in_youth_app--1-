@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE budget_lines SET category = 'delivery' WHERE category = 'facilitator_fee';\nUPDATE budget_lines SET category = 'coordinator' WHERE category = 'coordinator_fee';\nUPDATE budget_lines SET category = 'evaluation_report' WHERE category = 'monitoring_evaluation';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute UPDATE budget_lines SET category = 'delivery' WHERE category = 'facilitator_fee';\nUPDATE budget_lines SET category = 'coordinator' WHERE category = 'coordinator_fee';\nUPDATE budget_lines SET category = 'evaluation_report' WHERE category = 'monitoring_evaluation';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 452
+}

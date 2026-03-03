@@ -1,0 +1,31 @@
+{
+  "query": "SELECT COUNT(*) as user_count FROM users; SELECT id, name, email, role FROM users LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT COUNT(*) as user_count FROM users; SELECT id, name, email, role FROM users LIMIT 5;",
+  "rows": [
+    {
+      "user_count": "6"
+    },
+    {
+      "user_count": "id\tname\temail\trole"
+    },
+    {
+      "user_count": "1\tdeji\tdeji@changeinyouth.org.uk\tadmin"
+    },
+    {
+      "user_count": "270007\tDeji Adeoshun\tdejiadeoshun@gmail.com\tadmin"
+    },
+    {
+      "user_count": "330220\tAdmin Test User\tadmin@changeinyouth.org\tadmin"
+    },
+    {
+      "user_count": "540001\tTest Performance User\tperformance@test.com\tfacilitator"
+    },
+    {
+      "user_count": "540003\tTest Performance User\tperformance-1768204078412@test.com\tfacilitator"
+    }
+  ],
+  "messages": [],
+  "stdout": "user_count\n6\nid\tname\temail\trole\n1\tdeji\tdeji@changeinyouth.org.uk\tadmin\n270007\tDeji Adeoshun\tdejiadeoshun@gmail.com\tadmin\n330220\tAdmin Test User\tadmin@changeinyouth.org\tadmin\n540001\tTest Performance User\tperformance@test.com\tfacilitator\n540003\tTest Performance User\tperformance-1768204078412@test.com\tfacilitator\n",
+  "stderr": "",
+  "execution_time_ms": 68
+}

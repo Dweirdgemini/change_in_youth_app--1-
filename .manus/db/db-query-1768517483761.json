@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO users (\n  openId, email, name, role, organization_id, \n  loginMethod, canPostJobs, lastSignedIn, createdAt, updatedAt\n) VALUES (\n  'rami_breich_finance_001',\n  'rami@tegemea.com',\n  'Rami Breich',\n  'finance',\n  1,\n  'oauth',\n  0,\n  NOW(),\n  NOW(),\n  NOW()\n);\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute \nINSERT INTO users (\n  openId, email, name, role, organization_id, \n  loginMethod, canPostJobs, lastSignedIn, createdAt, updatedAt\n) VALUES (\n  'rami_breich_finance_001',\n  'rami@tegemea.com',\n  'Rami Breich',\n  'finance',\n  1,\n  'oauth',\n  0,\n  NOW(),\n  NOW(),\n  NOW()\n);\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 62
+}

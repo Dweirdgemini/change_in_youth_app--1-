@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, name, email, role, createdAt FROM users ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT id, name, email, role, createdAt FROM users ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "deji",
+      "email": "deji@changeinyouth.org.uk",
+      "role": "admin",
+      "createdAt": "2026-01-09 21:26:58"
+    },
+    {
+      "id": "270007",
+      "name": "Deji Adeoshun",
+      "email": "dejiadeoshun@gmail.com",
+      "role": "admin",
+      "createdAt": "2026-01-10 18:46:58"
+    },
+    {
+      "id": "330220",
+      "name": "Admin Test User",
+      "email": "admin@changeinyouth.org",
+      "role": "admin",
+      "createdAt": "2026-01-10 23:51:49"
+    },
+    {
+      "id": "540001",
+      "name": "Test Performance User",
+      "email": "performance@test.com",
+      "role": "facilitator",
+      "createdAt": "2026-01-12 07:47:15"
+    },
+    {
+      "id": "540003",
+      "name": "Test Performance User",
+      "email": "performance-1768204078412@test.com",
+      "role": "facilitator",
+      "createdAt": "2026-01-12 07:47:58"
+    },
+    {
+      "id": "540004",
+      "name": "Test Performance User",
+      "email": "performance-1768204105093@test.com",
+      "role": "facilitator",
+      "createdAt": "2026-01-12 07:48:25"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\trole\tcreatedAt\n1\tdeji\tdeji@changeinyouth.org.uk\tadmin\t2026-01-09 21:26:58\n270007\tDeji Adeoshun\tdejiadeoshun@gmail.com\tadmin\t2026-01-10 18:46:58\n330220\tAdmin Test User\tadmin@changeinyouth.org\tadmin\t2026-01-10 23:51:49\n540001\tTest Performance User\tperformance@test.com\tfacilitator\t2026-01-12 07:47:15\n540003\tTest Performance User\tperformance-1768204078412@test.com\tfacilitator\t2026-01-12 07:47:58\n540004\tTest Performance User\tperformance-1768204105093@test.com\tfacilitator\t2026-01-12 07:48:25\n",
+  "stderr": "",
+  "execution_time_ms": 77
+}

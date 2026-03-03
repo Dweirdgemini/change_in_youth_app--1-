@@ -1,0 +1,22 @@
+{
+  "query": "SELECT * FROM job_postings;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM job_postings;",
+  "rows": [],
+  "messages": [
+    "1\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in",
+    "Location: Westminster",
+    "Apply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:36:27\t2026-01-13 16:36:27",
+    "2\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in",
+    "Location: Westminster",
+    "Apply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:37:56\t2026-01-13 16:37:56",
+    "3\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in",
+    "Location: Westminster",
+    "Apply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:39:12\t2026-01-13 16:39:12",
+    "4\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in",
+    "Location: Westminster",
+    "Apply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:44:41\t2026-01-13 16:44:41"
+  ],
+  "stdout": "id\ttitle\tdescription\tlocation\tjob_type\tsalary\trequirements\tresponsibilities\tstatus\tposted_by\tclosing_date\tview_count\tapplication_count\tcreated_at\tupdated_at\n1\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in\n\nLocation: Westminster\n\nApply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:36:27\t2026-01-13 16:36:27\n2\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in\n\nLocation: Westminster\n\nApply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:37:56\t2026-01-13 16:37:56\n3\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in\n\nLocation: Westminster\n\nApply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:39:12\t2026-01-13 16:39:12\n4\tProject Support Officer with Government Legal Department in\tProject Support Officer with Government Legal Department in\n\nLocation: Westminster\n\nApply: https://ow.ly/ztef50XQl6h\tNULL\tNULL\tNULL\tNULL\tNULL\tactive\t1\tNULL\t0\t0\t2026-01-13 16:44:41\t2026-01-13 16:44:41\n",
+  "stderr": "",
+  "execution_time_ms": 90
+}

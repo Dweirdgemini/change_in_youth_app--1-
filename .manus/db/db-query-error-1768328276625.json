@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO team_chat_members (channel_id, user_id, joined_at) \nVALUES (1, 999, NOW()) \nON DUPLICATE KEY UPDATE joined_at = joined_at;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute INSERT INTO team_chat_members (channel_id, user_id, joined_at) \nVALUES (1, 999, NOW()) \nON DUPLICATE KEY UPDATE joined_at = joined_at;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'jfuwbl5sx5frfcfwk9f3wu.team_chat_members' doesn't exist"
+  ]
+}

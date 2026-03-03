@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE consent_forms \nADD COLUMN title VARCHAR(255),\nADD COLUMN description TEXT,\nADD COLUMN formFields TEXT,\nADD COLUMN participantName VARCHAR(255),\nADD COLUMN parentName VARCHAR(255),\nADD COLUMN parentEmail VARCHAR(255),\nADD COLUMN parentPhone VARCHAR(50),\nADD COLUMN signatureData TEXT,\nADD COLUMN formResponses TEXT,\nADD COLUMN createdBy INT,\nADD COLUMN expiryDate TIMESTAMP;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute ALTER TABLE consent_forms \nADD COLUMN title VARCHAR(255),\nADD COLUMN description TEXT,\nADD COLUMN formFields TEXT,\nADD COLUMN participantName VARCHAR(255),\nADD COLUMN parentName VARCHAR(255),\nADD COLUMN parentEmail VARCHAR(255),\nADD COLUMN parentPhone VARCHAR(50),\nADD COLUMN signatureData TEXT,\nADD COLUMN formResponses TEXT,\nADD COLUMN createdBy INT,\nADD COLUMN expiryDate TIMESTAMP;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 3238
+}

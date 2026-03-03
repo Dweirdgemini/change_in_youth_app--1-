@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as membership_count FROM team_chat_members WHERE user_id = 999;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT COUNT(*) as membership_count FROM team_chat_members WHERE user_id = 999;",
+  "rows": [
+    {
+      "membership_count": "17"
+    }
+  ],
+  "messages": [],
+  "stdout": "membership_count\n17\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

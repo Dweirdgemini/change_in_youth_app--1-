@@ -1,0 +1,314 @@
+--- a/server/_core/index.ts
++++ b/server/_core/index.ts
+@@ -1,6 +1,7 @@
+ import "dotenv/config";
+ import express from "express";
+ import { createServer } from "http";
+ import net from "net";
+ import * as cookie from "cookie";
+ import { createExpressMiddleware } from "@trpc/server/adapters/express";
++import pino from "pino";
+ import { registerOAuthRoutes } from "./oauth";
+ import { setupQRAuthRoutes } from "../routes/qr-auth";
+ import { setupConsentFormRoutes } from "../routes/consent-form";
+@@ -8,6 +9,26 @@ import { appRouter } from "../routers";
+ import { createContext } from "./context";
+ 
++/**
++ * Production-grade logger with structured logging
++ * AUDIT-0002: Replace console.log with pino for security and observability
++ */
++const log = pino({
++  level: process.env.LOG_LEVEL || (process.env.NODE_ENV === "production" ? "info" : "debug"),
++  transport: process.env.NODE_ENV === "production" ? undefined : {
++    target: "pino-pretty",
++    options: {
++      colorize: true,
++      translateTime: "SYS:standard",
++      ignore: "pid,hostname",
++    },
++  },
++});
++
+ function isPortAvailable(port: number): Promise<boolean> {
+   return new Promise((resolve) => {
+     const server = net.createServer();
+@@ -32,7 +53,24 @@ async function startServer() {
+   const app = express();
+   const server = createServer(app);
+ 
+-  // Enable CORS for all routes - reflect the request origin to support credentials
++  // HIGH-RISK FIX #6: CORS - Whitelist allowed origins instead of reflecting arbitrary origins
++  const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").filter(Boolean);
++  
++  // Add default origins for development
++  if (process.env.NODE_ENV !== "production") {
++    ALLOWED_ORIGINS.push(
++      "http://localhost:8081",
++      "http://localhost:3000",
++      "http://127.0.0.1:8081",
++      "http://127.0.0.1:3000"
++    );
++  }
++
+   app.use((req, res, next) => {
+     const origin = req.headers.origin;
++    
++    // Only set CORS headers for whitelisted origins
++    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+       res.header("Access-Control-Allow-Origin", origin);
++      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
++      res.header(
++        "Access-Control-Allow-Headers",
++        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-dev-mode"
++      );
++      res.header("Access-Control-Allow-Credentials", "true");
++      res.header("Access-Control-Max-Age", "86400");
++    }
+ 
+     // Handle preflight requests
+     if (req.method === "OPTIONS") {
+@@ -81,50 +119,34 @@ async function startServer() {
+   // REST API endpoint for pending invoices (bypass TRPC)
+   app.get("/api/invoices/pending", async (req, res) => {
+     try {
+-      console.log('[REST API] /api/invoices/pending called');
+-      console.log('[REST API] Cookies:', req.cookies);
+-      console.log('[REST API] Headers:', req.headers.cookie);
+       
+       // Check authentication
+       const { COOKIE_NAME } = require('../../shared/const');
+       const sessionToken = req.cookies[COOKIE_NAME];
+       
+-      console.log('[REST API] COOKIE_NAME:', COOKIE_NAME);
+-      console.log('[REST API] Session token:', sessionToken ? sessionToken.substring(0, 20) + '...' : 'null');
+       
+       if (!sessionToken) {
+-        console.log('[REST API] No session token found in cookies');
++        log.warn({ endpoint: "/api/invoices/pending" }, "No session token found");
+         return res.status(401).json({ error: 'Not authenticated' });
+       }
+       
+       // Get user from session
+       let user = null;
+       if (global.testSessions && global.testSessions.has(sessionToken)) {
+         user = global.testSessions.get(sessionToken);
+-        console.log('[REST API] User from test session:', user.email, user.role);
+       }
+       
+       if (!user) {
+-        console.log('[REST API] Invalid session token');
++        log.warn({ endpoint: "/api/invoices/pending" }, "Invalid session token");
+         return res.status(401).json({ error: 'Invalid session' });
+       }
+       
+       // Check if user is admin or finance
+       if (user.role !== 'admin' && user.role !== 'finance') {
+-        console.log('[REST API] User not authorized:', user.role);
++        log.warn({ endpoint: "/api/invoices/pending", userRole: user.role }, "User not authorized");
+         return res.status(403).json({ error: 'Not authorized' });
+       }
+       
+       // Query database for pending auto-generated invoices
+       const { getDb } = require('../db');
+       const { invoices, users, projects } = require('../../drizzle/schema');
+       const { eq, and } = require('drizzle-orm');
+       
+       const db = await getDb();
+       if (!db) {
+-        console.log('[REST API] Database not available');
++        log.error({ endpoint: "/api/invoices/pending" }, "Database not available");
+         return res.status(500).json({ error: 'Database not available' });
+       }
+       
+@@ -150,23 +172,23 @@ async function startServer() {
+         )
+         .orderBy(invoices.submittedAt);
+       
+-      console.log('[REST API] Found', result.length, 'pending invoices');
++      log.debug({ endpoint: "/api/invoices/pending", count: result.length }, "Pending invoices retrieved");
+       res.json({ success: true, invoices: result });
+       
+     } catch (error) {
+-      console.error('[REST API] Error:', error);
+-      res.status(500).json({ error: 'Internal server error', message: error.message });
++      log.error({ endpoint: "/api/invoices/pending", error }, "Request failed");
++      res.status(500).json({ error: 'Internal server error' });
+     }
+   });
+ 
+   app.use(
+     "/api/trpc",
+     createExpressMiddleware({
+       router: appRouter,
+       createContext,
+     }),
+   );
+ 
+   const preferredPort = parseInt(process.env.PORT || "3000");
+   const port = await findAvailablePort(preferredPort);
+ 
+   if (port !== preferredPort) {
+-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
++    log.warn({ preferredPort, actualPort: port }, "Preferred port unavailable, using alternative");
+   }
+ 
+   server.listen(port, () => {
+-    console.log(`[api] server listening on port ${port}`);
++    log.info({ port }, "Server listening");
+   });
+ }
+ 
+-startServer().catch(console.error);
++startServer().catch((error) => {
++  log.error(error, "Server startup failed");
++  process.exit(1);
++});
+
+--- a/drizzle/schema.ts
++++ b/drizzle/schema.ts
+@@ -1103,6 +1103,7 @@ export const socialMediaPosts = mysqlTable("social_media_posts", {
+ // Social media submissions from team members
+ export const socialMediaSubmissions = mysqlTable("social_media_submissions", {
+   id: int("id").primaryKey().autoincrement(),
++  chatId: int("chat_id").notNull(), // reference to chat channel
+   messageId: int("message_id").notNull(), // reference to projectChatMessages
+   submittedBy: int("submitted_by").notNull(),
+   caption: text("caption"),
+-  platforms: varchar("platforms", { length: 100 }).default("instagram,twitter"), // comma-separated
++  platforms: json("platforms").$type<string[]>().default(JSON.stringify(["instagram"])), // JSON array of platform names
+   status: varchar("status", { length: 20 }).default("pending"), // 'pending', 'approved', 'rejected'
+
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,6 +1,16 @@
+ {
+   "extends": "expo/tsconfig.base",
+   "compilerOptions": {
+-    "strict": false,
++    "strict": true,
++    "noImplicitAny": true,
++    "strictNullChecks": true,
++    "strictFunctionTypes": true,
++    "strictBindCallApply": true,
++    "strictPropertyInitialization": true,
++    "noImplicitThis": true,
++    "alwaysStrict": true,
++    "noUnusedLocals": false,
++    "noUnusedParameters": false,
++    "noImplicitReturns": true,
++    "noFallthroughCasesInSwitch": true,
+     "skipLibCheck": true,
+     "types": [
+
+--- /dev/null
++++ b/vitest.config.ts
+@@ -0,0 +1,27 @@
++import { defineConfig } from 'vitest/config';
++import path from 'path';
++
++/**
++ * Vitest configuration with path aliases matching tsconfig.json
++ * Ensures tests can resolve @/ and @shared/ imports correctly
++ * AUDIT-0001: Fix import path resolution failures in test environment
++ */
++export default defineConfig({
++  test: {
++    globals: true,
++    environment: 'node',
++    setupFiles: [],
++    coverage: {
++      provider: 'v8',
++      reporter: ['text', 'json', 'html'],
++      exclude: [
++        'node_modules/',
++        'dist/',
++        '.expo/',
++        'tests/',
++        '__tests__/',
++      ],
++    },
++  },
++  resolve: {
++    alias: {
++      '@': path.resolve(__dirname, './'),
++      '@shared': path.resolve(__dirname, './shared'),
++    },
++  },
++});
+
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,72 @@
++# Change In Youth - Environment Configuration
++# Copy this file to .env and fill in your values for your environment
++# REQUIRED variables must be set for the app to function
++
++# ============================================================================
++# AUTHENTICATION & OAUTH (REQUIRED)
++# ============================================================================
++
++# JWT secret for signing session tokens
++# Generate with: openssl rand -hex 32
++JWT_SECRET=your-secret-key-here
++
++# OAuth server URL (Manus platform)
++OAUTH_SERVER_URL=https://oauth.manus.im
++
++# Your app's ID from Manus platform
++VITE_APP_ID=your-app-id-here
++
++# Owner's OpenID (admin user)
++OWNER_OPEN_ID=your-owner-openid
++
++# ============================================================================
++# DATABASE (REQUIRED)
++# ============================================================================
++
++# MySQL connection string
++# Format: mysql://user:password@host:port/database
++DATABASE_URL=mysql://user:password@localhost:3306/change_in_youth
++
++# ============================================================================
++# SERVER CONFIGURATION
++# ============================================================================
++
++# Node environment
++NODE_ENV=development
++
++# Server port (default: 3000)
++PORT=3000
++
++# Log level (debug, info, warn, error)
++LOG_LEVEL=debug
++
++# ============================================================================
++# CORS & SECURITY (OPTIONAL)
++# ============================================================================
++
++# Comma-separated list of allowed origins for CORS
++ALLOWED_ORIGINS=http://localhost:8081,http://localhost:3000
++
++# Custom domain for the app
++CUSTOM_DOMAIN=https://changein.youth
++
++# ============================================================================
++# EMAIL SERVICE (OPTIONAL)
++# ============================================================================
++
++# Email service provider: console, sendgrid, or ses
++EMAIL_SERVICE=console
++
++# SendGrid API key (required if EMAIL_SERVICE=sendgrid)
++SENDGRID_API_KEY=
++
++# Email sender address
++EMAIL_FROM=noreply@changeindelivery.org
++
++# ============================================================================
++# AWS CONFIGURATION (OPTIONAL)
++# ============================================================================
++
++AWS_ACCESS_KEY_ID=
++AWS_SECRET_ACCESS_KEY=
++AWS_REGION=eu-west-1

@@ -1,0 +1,245 @@
+import { z } from "zod";
+import { router, protectedProcedure } from "../_core/trpc";
+import { getDb } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { sendPushNotification } from "../_core/push";
+
+export const notificationsRouter = router({
+  // Send payment approval notification
+  sendPaymentNotification: protectedProcedure
+    .input(
+      z.object({
+        invoiceId: z.number(),
+        facilitatorId: z.number(),
+        amount: z.number(),
+        projectName: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Only finance and admin can send payment notifications
+      if (ctx.user.role !== "finance" && ctx.user.role !== "admin") {
+        throw new Error("Only finance team can send payment notifications");
+      }
+
+      const facilitator = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, input.facilitatorId))
+        .limit(1);
+
+      if (!facilitator[0] || !facilitator[0].pushToken) {
+        return { success: false, message: "User has no push token" };
+      }
+
+      await sendPushNotification({
+        to: facilitator[0].pushToken,
+        title: "Payment Approved",
+        body: `Your invoice for £${input.amount} (${input.projectName}) has been approved and will be processed soon.`,
+        data: {
+          type: "payment_approved",
+          invoiceId: input.invoiceId,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  // Send job posting notification to all users
+  sendJobNotification: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.number(),
+        jobTitle: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Only admin can post jobs
+      if (ctx.user.role !== "admin") {
+        throw new Error("Only admins can send job notifications");
+      }
+
+      const allUsers = await db.select().from(users);
+
+      const notifications = allUsers
+        .filter((user) => user.pushToken)
+        .map((user) =>
+          sendPushNotification({
+            to: user.pushToken!,
+            title: "New Job Opportunity",
+            body: `Check out the new position: ${input.jobTitle}`,
+            data: {
+              type: "new_job",
+              jobId: input.jobId,
+            },
+          })
+        );
+
+      await Promise.all(notifications);
+
+      return { success: true, sentTo: notifications.length };
+    }),
+
+  // Send chat message notification
+  sendChatNotification: protectedProcedure
+    .input(
+      z.object({
+        recipientId: z.number(),
+        senderName: z.string(),
+        message: z.string(),
+        channelId: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const recipient = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, input.recipientId))
+        .limit(1);
+
+      if (!recipient[0] || !recipient[0].pushToken) {
+        return { success: false, message: "User has no push token" };
+      }
+
+      await sendPushNotification({
+        to: recipient[0].pushToken,
+        title: `Message from ${input.senderName}`,
+        body: input.message.substring(0, 100),
+        data: {
+          type: "chat_message",
+          channelId: input.channelId,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  // Send survey invitation notification
+  sendSurveyNotification: protectedProcedure
+    .input(
+      z.object({
+        surveyId: z.number(),
+        surveyTitle: z.string(),
+        recipientIds: z.array(z.number()),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Only admin and facilitators can send surveys
+      if (ctx.user.role !== "admin" && ctx.user.role !== "facilitator") {
+        throw new Error("Only admins and facilitators can send survey notifications");
+      }
+
+      const recipients = await db
+        .select()
+        .from(users)
+        .where(
+          eq(
+            users.id,
+            input.recipientIds[0]
+          )
+        );
+
+      const notifications = recipients
+        .filter((user) => user.pushToken)
+        .map((user) =>
+          sendPushNotification({
+            to: user.pushToken!,
+            title: "New Survey Available",
+            body: `Please complete: ${input.surveyTitle}`,
+            data: {
+              type: "survey_invitation",
+              surveyId: input.surveyId,
+            },
+          })
+        );
+
+      await Promise.all(notifications);
+
+      return { success: true, sentTo: notifications.length };
+    }),
+
+  // Send session reminder notification
+  sendSessionReminder: protectedProcedure
+    .input(
+      z.object({
+        sessionId: z.number(),
+        facilitatorIds: z.array(z.number()),
+        sessionTitle: z.string(),
+        sessionDate: z.string(),
+        location: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Only admin and facilitators can send reminders
+      if (ctx.user.role !== "admin" && ctx.user.role !== "facilitator") {
+        throw new Error("Only admins and facilitators can send session reminders");
+      }
+
+      const facilitators = await db.select().from(users);
+
+      const notifications = facilitators
+        .filter((user) => input.facilitatorIds.includes(user.id) && user.pushToken)
+        .map((user) =>
+          sendPushNotification({
+            to: user.pushToken!,
+            title: "Session Reminder",
+            body: `${input.sessionTitle} at ${input.location} on ${input.sessionDate}`,
+            data: {
+              type: "session_reminder",
+              sessionId: input.sessionId,
+            },
+          })
+        );
+
+      await Promise.all(notifications);
+
+      return { success: true, sentTo: notifications.length };
+    }),
+
+  // Register push token for user
+  registerPushToken: protectedProcedure
+    .input(
+      z.object({
+        pushToken: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      await db
+        .update(users)
+        .set({ pushToken: input.pushToken })
+        .where(eq(users.id, ctx.user.id));
+
+      return { success: true };
+    }),
+
+  // Unregister push token
+  unregisterPushToken: protectedProcedure.mutation(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    await db
+      .update(users)
+      .set({ pushToken: null })
+      .where(eq(users.id, ctx.user.id));
+
+    return { success: true };
+  }),
+});

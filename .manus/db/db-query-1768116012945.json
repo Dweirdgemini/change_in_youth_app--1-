@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE deliverables_completed (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  sessionId INT NOT NULL,\n  userId INT NOT NULL,\n  deliverableType ENUM('register', 'evaluation_form', 'photos', 'videos') NOT NULL,\n  fileUrl VARCHAR(500),\n  notes TEXT,\n  completedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute CREATE TABLE deliverables_completed (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  sessionId INT NOT NULL,\n  userId INT NOT NULL,\n  deliverableType ENUM('register', 'evaluation_form', 'photos', 'videos') NOT NULL,\n  fileUrl VARCHAR(500),\n  notes TEXT,\n  completedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 527
+}

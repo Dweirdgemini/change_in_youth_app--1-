@@ -1,0 +1,40 @@
+{
+  "query": "SELECT cm.*, tc.name as channel_name, u.name as user_name \nFROM team_chat_messages cm \nLEFT JOIN team_chat_channels tc ON tc.id = cm.channel_id \nLEFT JOIN users u ON u.id = cm.user_id \nORDER BY cm.created_at DESC \nLIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT cm.*, tc.name as channel_name, u.name as user_name \nFROM team_chat_messages cm \nLEFT JOIN team_chat_channels tc ON tc.id = cm.channel_id \nLEFT JOIN users u ON u.id = cm.user_id \nORDER BY cm.created_at DESC \nLIMIT 10;",
+  "rows": [
+    {
+      "id": "3",
+      "channel_id": "2",
+      "user_id": "999",
+      "content": "this is me deji",
+      "created_at": "2026-01-14 16:00:47",
+      "updated_at": "2026-01-14 16:00:47",
+      "channel_name": "dejispurs",
+      "user_name": "NULL"
+    },
+    {
+      "id": "2",
+      "channel_id": "2",
+      "user_id": "999",
+      "content": "I think it works",
+      "created_at": "2026-01-14 15:41:18",
+      "updated_at": "2026-01-14 15:41:18",
+      "channel_name": "dejispurs",
+      "user_name": "NULL"
+    },
+    {
+      "id": "1",
+      "channel_id": "60004",
+      "user_id": "999",
+      "content": "get me",
+      "created_at": "2026-01-14 15:40:52",
+      "updated_at": "2026-01-14 15:40:52",
+      "channel_name": "we won well done",
+      "user_name": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tchannel_id\tuser_id\tcontent\tcreated_at\tupdated_at\tchannel_name\tuser_name\n3\t2\t999\tthis is me deji\t2026-01-14 16:00:47\t2026-01-14 16:00:47\tdejispurs\tNULL\n2\t2\t999\tI think it works\t2026-01-14 15:41:18\t2026-01-14 15:41:18\tdejispurs\tNULL\n1\t60004\t999\tget me\t2026-01-14 15:40:52\t2026-01-14 15:40:52\twe won well done\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 264
+}

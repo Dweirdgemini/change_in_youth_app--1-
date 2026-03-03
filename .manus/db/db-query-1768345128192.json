@@ -1,0 +1,16 @@
+{
+  "query": "SELECT * FROM team_chat_members WHERE user_id = 999;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM team_chat_members WHERE user_id = 999;",
+  "rows": [
+    {
+      "id": "1",
+      "channel_id": "1",
+      "user_id": "999",
+      "joined_at": "2026-01-13 22:21:27"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tchannel_id\tuser_id\tjoined_at\n1\t1\t999\t2026-01-13 22:21:27\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

@@ -1,0 +1,18 @@
+{
+  "query": "\n-- Create a test invoice for user 1 with amount field\nINSERT INTO invoices (\n  userId, \n  projectId, \n  invoiceNumber, \n  amount,\n  totalAmount, \n  paidAmount,\n  description, \n  budgetLineCategory, \n  status, \n  submittedAt,\n  createdAt,\n  updatedAt\n) VALUES (\n  1,\n  1,\n  'TEST-001',\n  150.00,\n  150.00,\n  0.00,\n  'Test Invoice for Detail Page - 2 sessions completed',\n  'facilitator_fee',\n  'pending',\n  NOW(),\n  NOW(),\n  NOW()\n);\n\n-- Verify the invoice was created\nSELECT id, invoiceNumber, amount, totalAmount, status, description \nFROM invoices \nWHERE invoiceNumber = 'TEST-001';\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute \n-- Create a test invoice for user 1 with amount field\nINSERT INTO invoices (\n  userId, \n  projectId, \n  invoiceNumber, \n  amount,\n  totalAmount, \n  paidAmount,\n  description, \n  budgetLineCategory, \n  status, \n  submittedAt,\n  createdAt,\n  updatedAt\n) VALUES (\n  1,\n  1,\n  'TEST-001',\n  150.00,\n  150.00,\n  0.00,\n  'Test Invoice for Detail Page - 2 sessions completed',\n  'facilitator_fee',\n  'pending',\n  NOW(),\n  NOW(),\n  NOW()\n);\n\n-- Verify the invoice was created\nSELECT id, invoiceNumber, amount, totalAmount, status, description \nFROM invoices \nWHERE invoiceNumber = 'TEST-001';\n",
+  "rows": [
+    {
+      "id": "1",
+      "invoiceNumber": "TEST-001",
+      "amount": "150.00",
+      "totalAmount": "150.00",
+      "status": "pending",
+      "description": "Test Invoice for Detail Page - 2 sessions completed"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tinvoiceNumber\tamount\ttotalAmount\tstatus\tdescription\n1\tTEST-001\t150.00\t150.00\tpending\tTest Invoice for Detail Page - 2 sessions completed\n",
+  "stderr": "",
+  "execution_time_ms": 71
+}

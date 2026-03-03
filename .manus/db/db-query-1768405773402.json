@@ -1,0 +1,26 @@
+{
+  "query": "SELECT * FROM team_chat_messages ORDER BY created_at DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM team_chat_messages ORDER BY created_at DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "2",
+      "channel_id": "2",
+      "user_id": "999",
+      "content": "I think it works",
+      "created_at": "2026-01-14 15:41:18",
+      "updated_at": "2026-01-14 15:41:18"
+    },
+    {
+      "id": "1",
+      "channel_id": "60004",
+      "user_id": "999",
+      "content": "get me",
+      "created_at": "2026-01-14 15:40:52",
+      "updated_at": "2026-01-14 15:40:52"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tchannel_id\tuser_id\tcontent\tcreated_at\tupdated_at\n2\t2\t999\tI think it works\t2026-01-14 15:41:18\t2026-01-14 15:41:18\n1\t60004\t999\tget me\t2026-01-14 15:40:52\t2026-01-14 15:40:52\n",
+  "stderr": "",
+  "execution_time_ms": 132
+}

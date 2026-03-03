@@ -1,0 +1,44 @@
+{
+  "query": "SELECT * FROM organizations;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute SELECT * FROM organizations;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Change In Youth CIC",
+      "slug": "change-in-youth",
+      "logo_url": "",
+      "primary_color": "#0a7ea4",
+      "subscription_tier": "enterprise",
+      "subscription_status": "active",
+      "trial_ends_at": "NULL",
+      "billing_email": "admin@changeinyouth.org",
+      "max_users": "999",
+      "settings": "NULL",
+      "created_at": "2026-01-11 09:20:24",
+      "updated_at": "2026-01-11 09:20:24",
+      "onboarding_completed": "0",
+      "onboarding_step": "0"
+    },
+    {
+      "id": "2",
+      "name": "Account Hackney",
+      "slug": "account-hackney",
+      "logo_url": "",
+      "primary_color": "#0a7ea4",
+      "subscription_tier": "professional",
+      "subscription_status": "trial",
+      "trial_ends_at": "2026-02-10 09:20:24",
+      "billing_email": "admin@accounthackney.org",
+      "max_users": "25",
+      "settings": "NULL",
+      "created_at": "2026-01-11 09:20:24",
+      "updated_at": "2026-01-11 09:20:24",
+      "onboarding_completed": "0",
+      "onboarding_step": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tslug\tlogo_url\tprimary_color\tsubscription_tier\tsubscription_status\ttrial_ends_at\tbilling_email\tmax_users\tsettings\tcreated_at\tupdated_at\tonboarding_completed\tonboarding_step\n1\tChange In Youth CIC\tchange-in-youth\t\t#0a7ea4\tenterprise\tactive\tNULL\tadmin@changeinyouth.org\t999\tNULL\t2026-01-11 09:20:24\t2026-01-11 09:20:24\t0\t0\n2\tAccount Hackney\taccount-hackney\t\t#0a7ea4\tprofessional\ttrial\t2026-02-10 09:20:24\tadmin@accounthackney.org\t25\tNULL\t2026-01-11 09:20:24\t2026-01-11 09:20:24\t0\t0\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

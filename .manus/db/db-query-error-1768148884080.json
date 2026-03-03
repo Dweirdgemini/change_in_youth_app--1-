@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE budget_lines \nADD COLUMN startDate TIMESTAMP NULL AFTER spentAmount,\nADD COLUMN endDate TIMESTAMP NULL AFTER startDate;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute ALTER TABLE budget_lines \nADD COLUMN startDate TIMESTAMP NULL AFTER spentAmount,\nADD COLUMN endDate TIMESTAMP NULL AFTER startDate;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'startdate' in 'budget_lines'"
+  ]
+}

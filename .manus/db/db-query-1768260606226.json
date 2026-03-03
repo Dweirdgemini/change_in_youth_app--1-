@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE users ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE projects ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE sessions ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE invoices ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE documents ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE consent_forms ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 27sEaT2BZNqjVK1.3777d857e0cd --database JfuWbL5SX5FRFCFWK9F3WU --execute ALTER TABLE users ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE projects ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE sessions ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE invoices ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE documents ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;\nALTER TABLE consent_forms ADD COLUMN IF NOT EXISTS organization_id INT NOT NULL DEFAULT 1 AFTER id;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 79
+}
