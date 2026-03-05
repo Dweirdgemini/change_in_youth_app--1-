@@ -26,6 +26,9 @@
     "internal": {
       "android": {
         "buildType": "apk"
+      },
+      "cache": {
+        "disabled": false
       }
     }
   }
