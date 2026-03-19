@@ -109,10 +109,21 @@ export function registerOAuthRoutes(app: Express) {
   });
 
   app.get("/api/oauth/mobile", async (req: Request, res: Response) => {
+    const requestId = `mobile-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");
 
+    console.log(`[OAuth Mobile ${requestId}] Request received:`, {
+      hasCode: !!code,
+      hasState: !!state,
+      code: code?.substring(0, 20) + "...",
+      state: state?.substring(0, 20) + "...",
+      userAgent: req.get('User-Agent'),
+      referer: req.get('Referer')
+    });
+
     if (!code || !state) {
+      console.error(`[OAuth Mobile ${requestId}] Missing parameters:`, { hasCode: !!code, hasState: !!state });
       res.status(400).json({ error: "code and state are required" });
       return;
     }
@@ -124,24 +135,44 @@ export function registerOAuthRoutes(app: Express) {
         const stateDecoded = Buffer.from(state, "base64").toString("utf-8");
         const stateData = JSON.parse(stateDecoded);
         deepLink = stateData.deepLink;
+        console.log(`[OAuth Mobile ${requestId}] State decoded successfully:`, { deepLink });
       } catch (e) {
-        console.log("[OAuth] Could not parse state as JSON, treating as simple redirect_uri");
+        console.log(`[OAuth Mobile ${requestId}] Could not parse state as JSON:`, e);
       }
 
+      console.log(`[OAuth Mobile ${requestId}] Exchanging code for token...`);
       const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-      const user = await syncUser(userInfo);
+      console.log(`[OAuth Mobile ${requestId}] Token exchange successful:`, {
+        hasAccessToken: !!tokenResponse.accessToken,
+        tokenType: tokenResponse.tokenType
+      });
 
+      console.log(`[OAuth Mobile ${requestId}] Getting user info...`);
+      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
+      console.log(`[OAuth Mobile ${requestId}] User info retrieved:`, {
+        openId: userInfo.openId,
+        name: userInfo.name,
+        email: userInfo.email,
+        loginMethod: userInfo.loginMethod
+      });
+
+      console.log(`[OAuth Mobile ${requestId}] Syncing user...`);
+      const user = await syncUser(userInfo);
+      console.log(`[OAuth Mobile ${requestId}] User synced:`, { userId: (user as any)?.id });
+
+      console.log(`[OAuth Mobile ${requestId}] Creating session token...`);
       const sessionToken = await sdk.createSessionToken(userInfo.openId!, {
         name: userInfo.name || "",
         expiresInMs: ONE_YEAR_MS,
       });
+      console.log(`[OAuth Mobile ${requestId}] Session token created successfully`);
 
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
       // Check if we have a deep link from state
       if (deepLink && deepLink.startsWith("manus")) {
+        console.log(`[OAuth Mobile ${requestId}] Mobile app detected, returning HTML redirect`);
         // Mobile app - return HTML page that triggers deep link
         const deepLinkWithToken = `${deepLink}?sessionToken=${encodeURIComponent(sessionToken)}&userId=${'id' in user ? user.id : ""}`;
         res.send(`
@@ -207,6 +238,7 @@ export function registerOAuthRoutes(app: Express) {
           </html>
         `);
       } else {
+        console.log(`[OAuth Mobile ${requestId}] API request detected, returning JSON`);
         // API request - return JSON
         res.json({
           app_session_id: sessionToken,
@@ -214,8 +246,16 @@ export function registerOAuthRoutes(app: Express) {
         });
       }
     } catch (error) {
-      console.error("[OAuth] Mobile exchange failed", error);
-      res.status(500).json({ error: "OAuth mobile exchange failed" });
+      console.error(`[OAuth Mobile ${requestId}] Mobile exchange failed:`, {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        code: code?.substring(0, 20) + "...",
+        state: state?.substring(0, 20) + "..."
+      });
+      res.status(500).json({ 
+        error: "OAuth mobile exchange failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

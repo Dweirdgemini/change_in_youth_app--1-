@@ -33,18 +33,18 @@ export function getApiBaseUrl(): string {
     return API_BASE_URL.replace(/\/$/, "");
   }
 
-  // On web, derive from current hostname by replacing port 8081 with 3000
+  // On web, derive from current hostname by replacing port 8081 with 3001
   if (ReactNative.Platform.OS === "web" && typeof window !== "undefined" && window.location) {
     const { protocol, hostname } = window.location;
-    // Pattern: 8081-sandboxid.region.domain -> 3000-sandboxid.region.domain
-    const apiHostname = hostname.replace(/^8081-/, "3000-");
+    // Pattern: 8081-sandboxid.region.domain -> 3001-sandboxid.region.domain
+    const apiHostname = hostname.replace(/^8081-/, "3001-");
     if (apiHostname !== hostname) {
       return `${protocol}//${apiHostname}`;
     }
   }
 
-  // Fallback to empty (will use relative URL)
-  return "";
+  // Fallback to PC's local IP for mobile connectivity
+  return "http://172.20.10.3:3002";
 }
 
 export const SESSION_TOKEN_KEY = "app_session_token";
@@ -62,6 +62,25 @@ const encodeState = (value: string) => {
 };
 
 export const getLoginUrl = () => {
+  console.log("[OAuth] Generating login URL with environment:", {
+    portal: OAUTH_PORTAL_URL,
+    appId: APP_ID,
+    apiBaseUrl: API_BASE_URL,
+    hasPortal: !!OAUTH_PORTAL_URL,
+    hasAppId: !!APP_ID
+  });
+
+  // Validate required environment variables
+  if (!OAUTH_PORTAL_URL) {
+    console.error("[OAuth] Missing EXPO_PUBLIC_OAUTH_PORTAL_URL");
+    throw new Error("OAuth portal URL is not configured");
+  }
+  
+  if (!APP_ID || APP_ID === 'your-app-id-here') {
+    console.error("[OAuth] Missing or invalid EXPO_PUBLIC_APP_ID");
+    throw new Error("App ID is not configured");
+  }
+
   let redirectUri: string;
   let stateData: { redirectUri: string; deepLink?: string };
 
@@ -70,12 +89,14 @@ export const getLoginUrl = () => {
     // The API server will then redirect back to the frontend with the session token
     redirectUri = `${getApiBaseUrl()}/api/oauth/callback`;
     stateData = { redirectUri };
+    console.log("[OAuth] Web platform: redirectUri =", redirectUri);
   } else {
     // Native platform: use mobile API endpoint
     // Encode deep link in state parameter (can't use query params in redirect_uri)
     redirectUri = `${getApiBaseUrl()}/api/oauth/mobile`;
     const deepLinkCallback = `${env.deepLinkScheme}://oauth/callback`;
     stateData = { redirectUri, deepLink: deepLinkCallback };
+    console.log("[OAuth] Native platform: redirectUri =", redirectUri, "deepLink =", deepLinkCallback);
   }
 
   const state = encodeState(JSON.stringify(stateData));
@@ -86,5 +107,8 @@ export const getLoginUrl = () => {
   url.searchParams.set("state", state);
   url.searchParams.set("type", "signIn");
 
-  return url.toString();
+  const finalUrl = url.toString();
+  console.log("[OAuth] Generated login URL:", finalUrl);
+  
+  return finalUrl;
 };

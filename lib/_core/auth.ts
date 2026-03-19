@@ -1,6 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 import { SESSION_TOKEN_KEY, USER_INFO_KEY } from "@/constants/oauth";
+import { getItem, setItem, removeItem } from '../storage';
 
 export type User = {
   id: number;
@@ -14,27 +15,14 @@ export type User = {
 
 export async function getSessionToken(): Promise<string | null> {
   try {
-    // On web, check localStorage for test session token
-    if (Platform.OS === "web") {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        const token = window.localStorage.getItem(SESSION_TOKEN_KEY);
-        if (token) {
-          console.log("[Auth] Retrieved session token from localStorage");
-          return token;
-        }
-      }
-      console.log("[Auth] No session token in localStorage, relying on cookies");
-      return null;
+    // Check storage for session token
+    const token = await getItem(SESSION_TOKEN_KEY);
+    if (token) {
+      console.log("[Auth] Retrieved session token from storage");
+      return token;
     }
-
-    // Use SecureStore for native
-    console.log("[Auth] Getting session token...");
-    const token = await SecureStore.getItemAsync(SESSION_TOKEN_KEY);
-    console.log(
-      "[Auth] Session token retrieved from SecureStore:",
-      token ? `present (${token.substring(0, 20)}...)` : "missing",
-    );
-    return token;
+    console.log("[Auth] No session token in storage, relying on cookies");
+    return null;
   } catch (error) {
     console.error("[Auth] Failed to get session token:", error);
     return null;
@@ -43,19 +31,9 @@ export async function getSessionToken(): Promise<string | null> {
 
 export async function setSessionToken(token: string): Promise<void> {
   try {
-    // On web, store token in localStorage for Authorization header
-    if (Platform.OS === "web") {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        window.localStorage.setItem(SESSION_TOKEN_KEY, token);
-        console.log("[Auth] Stored session token in localStorage");
-      }
-      return;
-    }
-
-    // Use SecureStore for native
-    console.log("[Auth] Setting session token...", token.substring(0, 20) + "...");
-    await SecureStore.setItemAsync(SESSION_TOKEN_KEY, token);
-    console.log("[Auth] Session token stored in SecureStore successfully");
+    // Store token in storage
+    await setItem(SESSION_TOKEN_KEY, token);
+    console.log("[Auth] Stored session token in storage");
   } catch (error) {
     console.error("[Auth] Failed to set session token:", error);
     throw error;
@@ -83,15 +61,7 @@ export async function getUserInfo(): Promise<User | null> {
   try {
     console.log("[Auth] Getting user info...");
 
-    let info: string | null = null;
-    if (Platform.OS === "web") {
-      // Use localStorage for web
-      info = window.localStorage.getItem(USER_INFO_KEY);
-    } else {
-      // Use SecureStore for native
-      info = await SecureStore.getItemAsync(USER_INFO_KEY);
-    }
-
+    const info = await getItem(USER_INFO_KEY);
     if (!info) {
       console.log("[Auth] No user info found");
       return null;
@@ -109,16 +79,8 @@ export async function setUserInfo(user: User): Promise<void> {
   try {
     console.log("[Auth] Setting user info...", user);
 
-    if (Platform.OS === "web") {
-      // Use localStorage for web
-      window.localStorage.setItem(USER_INFO_KEY, JSON.stringify(user));
-      console.log("[Auth] User info stored in localStorage successfully");
-      return;
-    }
-
-    // Use SecureStore for native
-    await SecureStore.setItemAsync(USER_INFO_KEY, JSON.stringify(user));
-    console.log("[Auth] User info stored in SecureStore successfully");
+    await setItem(USER_INFO_KEY, JSON.stringify(user));
+    console.log("[Auth] User info stored in storage successfully");
   } catch (error) {
     console.error("[Auth] Failed to set user info:", error);
   }
@@ -126,14 +88,7 @@ export async function setUserInfo(user: User): Promise<void> {
 
 export async function clearUserInfo(): Promise<void> {
   try {
-    if (Platform.OS === "web") {
-      // Use localStorage for web
-      window.localStorage.removeItem(USER_INFO_KEY);
-      return;
-    }
-
-    // Use SecureStore for native
-    await SecureStore.deleteItemAsync(USER_INFO_KEY);
+    await removeItem(USER_INFO_KEY);
   } catch (error) {
     console.error("[Auth] Failed to clear user info:", error);
   }

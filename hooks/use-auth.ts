@@ -3,6 +3,7 @@ import * as Auth from "@/lib/_core/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { getItem } from '@/lib/storage';
 
 type UseAuthOptions = {
   autoFetch?: boolean;
@@ -38,7 +39,7 @@ export function useAuth(options?: UseAuthOptions) {
           };
           
           // Check for test role override (development feature) on web
-          const testRole = localStorage.getItem("test_role");
+          const testRole = await getItem("test_role");
           if (testRole) {
             console.log("[useAuth] Web: Test role override detected:", testRole);
             setUser({

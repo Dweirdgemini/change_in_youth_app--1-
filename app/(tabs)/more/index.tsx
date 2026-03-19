@@ -9,6 +9,7 @@ import { DeleteAccountModal } from "@/components/delete-account-modal";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
+import { setItem } from '@/lib/storage';
 
 export default function MoreScreen() {
   const { user, isAuthenticated, loading, logout } = useAuth();
@@ -89,12 +90,8 @@ export default function MoreScreen() {
                 className="bg-warning px-6 py-3 rounded-full mt-4 active:opacity-80"
                 onPress={async () => {
                 try {
-                  // Use localStorage for web, SecureStore for native
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem("test_role", "admin");
-                  } else {
-                    await SecureStore.setItemAsync("test_role", "admin");
-                  }
+                  // Use platform-safe storage
+                  await setItem("test_role", "admin");
                   
                   Alert.alert(
                     "Admin Mode Activated",

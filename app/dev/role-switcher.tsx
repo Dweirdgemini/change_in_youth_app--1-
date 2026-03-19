@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useColors } from "@/hooks/use-colors";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
+import { setItem, removeItem } from '@/lib/storage';
 
 const ROLES = [
   { id: "admin", label: "Admin", icon: "shield-checkmark", description: "Full system access" },
@@ -33,8 +34,8 @@ export default function RoleSwitcherScreen() {
       
       setSwitching(true);
       try {
-        // Use localStorage on web instead of SecureStore
-        localStorage.setItem("test_role", roleId);
+        // Use platform-safe storage
+        await setItem("test_role", roleId);
         window.alert(`Role switched to ${roleId}! The page will reload.`);
         setTimeout(() => window.location.reload(), 500);
       } catch (error) {
@@ -80,7 +81,7 @@ export default function RoleSwitcherScreen() {
   const clearTestRole = async () => {
     try {
       if (Platform.OS === 'web') {
-        localStorage.removeItem("test_role");
+        await removeItem("test_role");
         window.alert("Test mode cleared! The page will reload.");
         setTimeout(() => window.location.reload(), 500);
       } else {

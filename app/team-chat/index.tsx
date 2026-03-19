@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import { getItem } from '@/lib/storage';
 
 export default function TeamChatScreen() {
   const colors = useColors();
@@ -18,9 +19,14 @@ export default function TeamChatScreen() {
   // Auto-redirect to Team Chat if it's the only channel
   useEffect(() => {
     if (channels && channels.length === 1) {
-      const devMode = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('dev_mode') || localStorage.getItem('dev_mode'));
-      const url = devMode ? `/team-chat/${channels[0].id}?dev_mode=true` : `/team-chat/${channels[0].id}`;
-      router.replace(url as any);
+      const getDevMode = async () => {
+        const urlParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('dev_mode') : null;
+        const storageDevMode = await getItem('dev_mode');
+        const devMode = urlParam || storageDevMode;
+        const url = devMode ? `/team-chat/${channels[0].id}?dev_mode=true` : `/team-chat/${channels[0].id}`;
+        router.replace(url as any);
+      };
+      getDevMode();
     }
   }, [channels]);
 
@@ -62,8 +68,10 @@ export default function TeamChatScreen() {
               {channels.map((channel) => (
                 <TouchableOpacity
                   key={channel.id}
-                  onPress={() => {
-                    const devMode = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('dev_mode') || localStorage.getItem('dev_mode'));
+                  onPress={async () => {
+                    const urlParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('dev_mode') : null;
+                    const storageDevMode = await getItem('dev_mode');
+                    const devMode = urlParam || storageDevMode;
                     const url = devMode ? `/team-chat/${channel.id}?dev_mode=true` : `/team-chat/${channel.id}`;
                     router.push(url as any);
                   }}

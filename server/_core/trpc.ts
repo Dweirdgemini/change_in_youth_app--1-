@@ -4,12 +4,13 @@ import superjson from "superjson";
 import type { TrpcContext } from "./context";
 import { requireFinanceAccess, requireProjectAccess } from "./permissions-middleware";
 
-const t = initTRPC.context<TrpcContext>().create({
+const tRPC = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
 });
 
-export const router = t.router;
-export const publicProcedure = t.procedure;
+export const t = tRPC;
+export const router = tRPC.router;
+export const publicProcedure = tRPC.procedure;
 
 const requireUser = t.middleware(async (opts) => {
   const { ctx, next } = opts;

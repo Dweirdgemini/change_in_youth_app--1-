@@ -4,6 +4,7 @@ import superjson from "superjson";
 import type { AppRouter } from "@/server/routers";
 import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
+import { getItem, setItem } from './storage';
 
 /**
  * tRPC React client for type-safe API calls.
@@ -29,23 +30,23 @@ export function createTRPCClient() {
           const headers: Record<string, string> = {};
           
           // DEV MODE BYPASS - Remove before production!
-          // Check URL parameter first, then localStorage
+          // Check URL parameter first, then storage
           if (typeof window !== 'undefined') {
             const urlParams = new URLSearchParams(window.location.search);
             const devModeParam = urlParams.get('dev_mode');
-            const devModeStorage = localStorage.getItem('dev_mode');
+            const devModeStorage = await getItem('dev_mode');
             const devMode = devModeParam || devModeStorage;
             
-            console.log('[tRPC] Checking dev_mode - URL param:', devModeParam, 'localStorage:', devModeStorage);
+            console.log('[tRPC] Checking dev_mode - URL param:', devModeParam, 'storage:', devModeStorage);
             
             if (devMode === 'true') {
               headers['x-dev-mode'] = 'true';
               console.log('[tRPC] ✅ Dev mode header added to request');
               
-              // Persist to localStorage for future requests
+              // Persist to storage for future requests
               if (!devModeStorage) {
-                localStorage.setItem('dev_mode', 'true');
-                console.log('[tRPC] Persisted dev_mode to localStorage');
+                await setItem('dev_mode', 'true');
+                console.log('[tRPC] Persisted dev_mode to storage');
               }
             } else {
               console.log('[tRPC] ❌ Dev mode NOT enabled');

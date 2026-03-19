@@ -69,6 +69,7 @@ export const users = mysqlTable("users", {
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
+  password: varchar("password", { length: 255 }), // For email/password authentication
   profileImageUrl: varchar("profileImageUrl", { length: 500 }),
   role: mysqlEnum("role", ["super_admin", "admin", "finance", "safeguarding", "team_member", "student", "social_media_manager"]).default("student").notNull(),
   loginMethod: varchar("loginMethod", { length: 50 }).notNull(),
