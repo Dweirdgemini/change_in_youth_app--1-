@@ -1,3 +1,16 @@
+// Validate required production environment variables
+const validateProductionEnv = () => {
+  const required = ['DATABASE_URL', 'JWT_SECRET'];
+  const missing = required.filter(key => !process.env[key]);
+  
+  if (process.env.NODE_ENV === 'production' && missing.length > 0) {
+    throw new Error(`Missing required production environment variables: ${missing.join(', ')}`);
+  }
+};
+
+// Validate on import
+validateProductionEnv();
+
 export const ENV = {
   appId: process.env.VITE_APP_ID ?? "",
   cookieSecret: process.env.JWT_SECRET ?? "",
