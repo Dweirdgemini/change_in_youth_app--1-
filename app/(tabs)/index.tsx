@@ -5,14 +5,11 @@ import { ScreenContainer } from "@/components/screen-container";
 import { useAuth } from "@/hooks/use-auth";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
-import * as WebBrowser from "expo-web-browser";
 import { getRoleLabel, getRoleColor } from "@/lib/role-formatter";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useBranding } from "@/lib/branding-provider";
 import { Image } from "expo-image";
 import { EmptyState } from "@/components/empty-state";
-import { ErrorState } from "@/components/error-state";
-import { getItem, setItem, removeItem } from '@/lib/storage';
+import { setItem } from '@/lib/storage';
 
 export default function HomeScreen() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -25,6 +22,43 @@ export default function HomeScreen() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showRegister, setShowRegister] = useState(false);
+
+  // Log component state after all declarations
+  console.log("[HomeScreen] Component rendering", {
+    isAuthenticated,
+    loading,
+    user,
+    showRegister,
+    isSigningIn,
+    isQuickAdminLoading
+  });
+
+  // Log form state changes
+  const handleEmailChange = (text: string) => {
+    console.log("[Form] Email changed", { email: text });
+    setEmail(text);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    console.log("[Form] Password changed", { 
+      passwordLength: text.length,
+      hasPassword: !!text.trim()
+    });
+    setPassword(text);
+  };
+
+  const handleNameChange = (text: string) => {
+    console.log("[Form] Name changed", { name: text });
+    setName(text);
+  };
+
+  const handleToggleRegister = () => {
+    console.log("[Form] Toggle register form", { 
+      fromRegister: showRegister,
+      toRegister: !showRegister 
+    });
+    setShowRegister(!showRegister);
+  };
   
   const { data: workshopCount, error: workshopError } = trpc.admin.getWorkshopCount.useQuery(
     undefined,
@@ -36,47 +70,117 @@ export default function HomeScreen() {
   const registerMutation = trpc.auth.register.useMutation();
 
   const handleLogin = async () => {
+    console.log("[Login] Starting login process", {
+      email: email.trim(),
+      hasPassword: !!password.trim(),
+      passwordLength: password.length
+    });
+
     if (!email.trim() || !password.trim()) {
+      console.log("[Login] Validation failed - empty fields", {
+        hasEmail: !!email.trim(),
+        hasPassword: !!password.trim()
+      });
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
+    if (password.length < 8) {
+      console.log("[Login] Validation failed - password too short", {
+        passwordLength: password.length,
+        requiredLength: 8
+      });
+      Alert.alert("Error", "Password must be at least 8 characters");
+      return;
+    }
+
+    console.log("[Login] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      await loginMutation.mutateAsync({ email: email.trim(), password: password });
-      // Login successful - useAuth hook will automatically update user state
-    } catch (error) {
-      console.error("[Login] Error:", error);
-      Alert.alert("Login Error", "Invalid email or password. Please try again.");
+      const result = await loginMutation.mutateAsync({ email: email.trim(), password: password });
+      console.log("[Login] API call successful", { result });
+      // Login successful - navigate to home
+      console.log("[Login] Navigating to home screen");
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      console.error("[Login] Error:", {
+        error,
+        errorMessage: error?.message,
+        errorType: error?.name,
+        stack: error?.stack
+      });
+      Alert.alert(
+        "Login Error", 
+        error?.message || "Invalid email or password. Please try again."
+      );
     } finally {
+      console.log("[Login] Login process completed");
       setIsSigningIn(false);
     }
   };
 
   const handleRegister = async () => {
+    console.log("[Register] Starting registration process", {
+      name: name.trim(),
+      email: email.trim(),
+      hasPassword: !!password.trim(),
+      passwordLength: password.length
+    });
+
     if (!name.trim() || !email.trim() || !password.trim()) {
+      console.log("[Register] Validation failed - empty fields", {
+        hasName: !!name.trim(),
+        hasEmail: !!email.trim(),
+        hasPassword: !!password.trim()
+      });
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
+    if (password.length < 8) {
+      console.log("[Register] Validation failed - password too short", {
+        passwordLength: password.length,
+        requiredLength: 8
+      });
+      Alert.alert("Error", "Password must be at least 8 characters");
+      return;
+    }
+
+    console.log("[Register] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      await registerMutation.mutateAsync({ 
+      const result = await registerMutation.mutateAsync({ 
         name: name.trim(),
         email: email.trim(), 
         password: password,
         role: "student" // Default role
       });
+      console.log("[Register] API call successful", { result });
       // Registration successful
-      Alert.alert("Success", "Account created successfully! You can now sign in.");
-      setShowRegister(false);
+      Alert.alert(
+        "Success", 
+        "Account created successfully! You can now sign in.",
+        [{ text: "OK", onPress: () => {
+          console.log("[Register] User clicked OK - switching to login form");
+          setShowRegister(false);
+        }}]
+      );
       setName("");
       setEmail("");
       setPassword("");
-    } catch (error) {
-      console.error("[Register] Error:", error);
-      Alert.alert("Registration Error", "Failed to create account. Please try again.");
+    } catch (error: any) {
+      console.error("[Register] Error:", {
+        error,
+        errorMessage: error?.message,
+        errorType: error?.name,
+        stack: error?.stack
+      });
+      Alert.alert(
+        "Registration Error", 
+        error?.message || "Failed to create account. Please try again."
+      );
     } finally {
+      console.log("[Register] Registration process completed");
       setIsSigningIn(false);
     }
   };
@@ -120,19 +224,21 @@ export default function HomeScreen() {
                     placeholder="Email address"
                     placeholderTextColor="#9BA1A6"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={handleEmailChange}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
+                    editable={!isSigningIn}
                   />
                   <TextInput
                     className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground text-base w-full"
                     placeholder="Password"
                     placeholderTextColor="#9BA1A6"
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={handlePasswordChange}
                     secureTextEntry
                     autoComplete="password"
+                    editable={!isSigningIn}
                   />
                   <TouchableOpacity
                     style={{ backgroundColor: primaryColor, opacity: isSigningIn || isQuickAdminLoading ? 0.6 : 1 }}
@@ -149,7 +255,8 @@ export default function HomeScreen() {
                   
                   <TouchableOpacity
                     className="border-2 border-primary px-6 py-4 rounded-full active:opacity-70"
-                    onPress={() => setShowRegister(true)}
+                    onPress={handleToggleRegister}
+                    disabled={isSigningIn}
                   >
                     <Text className="text-primary font-semibold text-lg">Create Account</Text>
                   </TouchableOpacity>
@@ -162,27 +269,30 @@ export default function HomeScreen() {
                     placeholder="Full name"
                     placeholderTextColor="#9BA1A6"
                     value={name}
-                    onChangeText={setName}
+                    onChangeText={handleNameChange}
                     autoCapitalize="words"
+                    editable={!isSigningIn}
                   />
                   <TextInput
                     className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground text-base w-full"
                     placeholder="Email address"
                     placeholderTextColor="#9BA1A6"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={handleEmailChange}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
+                    editable={!isSigningIn}
                   />
                   <TextInput
                     className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground text-base w-full"
                     placeholder="Password (min 8 characters)"
                     placeholderTextColor="#9BA1A6"
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={handlePasswordChange}
                     secureTextEntry
                     autoComplete="password"
+                    editable={!isSigningIn}
                   />
                   
                   <TouchableOpacity
@@ -200,7 +310,11 @@ export default function HomeScreen() {
                   
                   <TouchableOpacity
                     className="border-2 border-primary px-6 py-4 rounded-full active:opacity-70"
-                    onPress={() => setShowRegister(false)}
+                    onPress={() => {
+                      console.log("[Form] Back to login button pressed");
+                      handleToggleRegister();
+                    }}
+                    disabled={isSigningIn}
                   >
                     <Text className="text-primary font-semibold text-lg">Back to Sign In</Text>
                   </TouchableOpacity>
@@ -223,13 +337,25 @@ export default function HomeScreen() {
                   style={{ opacity: isQuickAdminLoading || isSigningIn ? 0.6 : 1 }}
                   disabled={isQuickAdminLoading || isSigningIn}
                   onPress={async () => {
-                    if (isQuickAdminLoading || isSigningIn) return;
+                    console.log("[QuickAdmin] Quick admin login button pressed");
+                    if (isQuickAdminLoading || isSigningIn) {
+                      console.log("[QuickAdmin] Login blocked - already loading");
+                      return;
+                    }
                     setIsQuickAdminLoading(true);
                   try {
-                    const apiUrl = 'http://localhost:3000';
+                    const apiUrl = process.env.EXPO_PUBLIC_API_URL || 
+                      (Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://172.20.10.3:3000');
+                    
+                    console.log("[QuickAdmin] Using API URL:", apiUrl);
+                    console.log("[QuickAdmin] Environment:", {
+                      EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL,
+                      Platform: Platform.OS,
+                      isDev: __DEV__
+                    });
                     
                     if (Platform.OS === 'web') {
-                      console.log('[Quick Login] Starting dev mode login...');
+                      console.log('[QuickAdmin] Starting web dev mode login...');
                       
                       // On web, call POST endpoint
                       const response = await fetch(`${apiUrl}/api/auth/test-login`, {
@@ -256,8 +382,10 @@ export default function HomeScreen() {
                       await setItem('user', JSON.stringify(data.user));
                       
                       // Enable dev_mode in storage for all future requests
-                      await setItem('dev_mode', 'true');
-                      console.log('[Quick Login] Enabled dev_mode in storage');
+                      if (__DEV__) {
+                        await setItem('dev_mode', 'true');
+                        console.log('[Quick Login] Enabled dev_mode in storage');
+                      }
                       
                       // Show success message and reload app
                       alert('Admin login successful! The app will reload.');
@@ -277,7 +405,7 @@ export default function HomeScreen() {
                       }
                       
                       const data = await response.json();
-                      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+                      await setItem('user', JSON.stringify(data.user));
                       Alert.alert(
                         'Admin Login',
                         'You are now logged in as Admin. The app will reload.',
