@@ -43,8 +43,8 @@ export function getApiBaseUrl(): string {
     }
   }
 
-  // Fallback to PC's local IP for mobile connectivity
-  return "http://172.20.10.3:3002";
+  // Fallback to production Railway backend
+  return "https://changeinyouthapp-1-production.up.railway.app";
 }
 
 export const SESSION_TOKEN_KEY = "app_session_token";
