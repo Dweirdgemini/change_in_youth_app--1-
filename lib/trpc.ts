@@ -1,5 +1,5 @@
 import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchStreamLink } from "@trpc/client";
+import { httpLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@/server/routers";
 import { getApiBaseUrl } from "@/constants/oauth";
@@ -22,12 +22,15 @@ export const trpc = createTRPCReact<AppRouter>();
 export function createTRPCClient() {
   return trpc.createClient({
     links: [
-      httpBatchStreamLink({
+      httpLink({
         url: `${getApiBaseUrl()}/api/trpc`,
         // tRPC v11: transformer MUST be inside httpLink, not at root
         transformer: superjson as any,
         async headers() {
           const headers: Record<string, string> = {};
+          
+          // Add tRPC React Native source header
+          headers['x-trpc-source'] = 'react-native';
           
           // DEV MODE BYPASS - Remove before production!
           // Check URL parameter first, then storage
