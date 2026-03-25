@@ -80,9 +80,7 @@ export const authRouter = router({
         console.log("[Auth Router] Registration failed:", result.error);
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: result.error instanceof Error ? 
-            result.error.message : "Registration failed: " + 
-            JSON.stringify(result.error)
+          message: result.error || "Registration failed"
         });
       }
       

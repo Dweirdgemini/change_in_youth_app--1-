@@ -99,6 +99,9 @@ export default function HomeScreen() {
     try {
       const result = await loginMutation.mutateAsync({ email: email.trim(), password: password });
       console.log("[Login] API call successful", { result });
+      // Save session token and user info to storage for native auth
+      if (result.sessionToken) await setItem('app_session_token', result.sessionToken);
+      if (result.user) await setItem('manus-runtime-user-info', JSON.stringify(result.user));
       // Login successful - navigate to home
       console.log("[Login] Navigating to home screen");
       router.replace("/(tabs)");

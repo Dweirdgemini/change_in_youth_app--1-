@@ -62,7 +62,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 /**
  * Generate JWT token for user session
  */
-export function generateSessionToken(userId: number, email: string): string {
+export async function generateSessionToken(userId: number, email: string): Promise<string> {
   const payload = {
     userId,
     email,
@@ -90,7 +90,7 @@ export async function verifySessionToken(token: string): Promise<any> {
     throw new Error("Invalid or expired session token");
   }
 }
-
+console.log("about to verify password")
 /**
  * Authenticate user with email and password
  */
@@ -131,7 +131,7 @@ export async function authenticateUser(credentials: LoginRequest): Promise<AuthR
         error: "Account uses OAuth login. Please sign in with OAuth."
       };
     }
-
+      console.log("about to verify password")
     // Verify password
     const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
@@ -140,9 +140,9 @@ export async function authenticateUser(credentials: LoginRequest): Promise<AuthR
         error: "Invalid email or password"
       };
     }
-
+    console.log("about to verify password")
     // Generate session token
-    const sessionToken = generateSessionToken(user.id, user.email || "");
+    const sessionToken = await generateSessionToken(user.id, user.email || "");
 
     // Update last sign in
     await db
@@ -162,7 +162,7 @@ export async function authenticateUser(credentials: LoginRequest): Promise<AuthR
       loginMethod: "email",
       lastSignedIn: new Date().toISOString()
     };
-
+    console.log("userResponse:"+userResponse)
     return {
       success: true,
       user: userResponse,
@@ -252,7 +252,7 @@ export async function registerUser(userData: RegisterRequest): Promise<AuthRespo
       .limit(1);
 
     // Generate session token
-    const sessionToken = generateSessionToken(newUser.id, email);
+    const sessionToken = await generateSessionToken(newUser.id, email);
 
     const userResponse = {
       id: newUser.id,
