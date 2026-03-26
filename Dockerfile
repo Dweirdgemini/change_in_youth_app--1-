@@ -4,24 +4,11 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Enable corepack and prepare pnpm with explicit version
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
-
-# Create pnpm store directory with proper permissions
-RUN mkdir -p /pnpm/store && chmod -R 777 /pnpm
-
-# Set pnpm environment variables
-ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-
-# Configure pnpm store location
-RUN pnpm config set store-dir /pnpm/store
-
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
-# Install dependencies (without --frozen-lockfile to avoid lockfile mismatch issues)
-RUN pnpm install
+# Install dependencies
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -34,24 +21,11 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Enable corepack and prepare pnpm
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
-
-# Create pnpm store directory with proper permissions
-RUN mkdir -p /pnpm/store && chmod -R 777 /pnpm
-
-# Set pnpm environment variables
-ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-
-# Configure pnpm store location
-RUN pnpm config set store-dir /pnpm/store
-
 # Copy package files from builder
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
 # Install production dependencies only
-RUN pnpm install --prod
+RUN npm ci --omit=dev
 
 # Copy built bundle from builder
 COPY --from=builder /app/dist ./dist

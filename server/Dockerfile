@@ -7,46 +7,28 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Enable corepack and activate pnpm
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
-
-# Configure pnpm store
-RUN mkdir -p /pnpm/store && chmod -R 777 /pnpm
-ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-RUN pnpm config set store-dir /pnpm/store
-
 # Copy package manifests and lock file from repo root
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
 # Install all dependencies
-RUN pnpm install --frozen-lockfile
+RUN npm ci
 
 # Copy full source (needed for server/, shared/, drizzle/ etc.)
 COPY . .
 
 # Build the server bundle (outputs to dist/index.js)
-RUN pnpm run build
+RUN npm run build
 
 # Stage 2: Runtime
 FROM node:22-alpine
 
 WORKDIR /app
 
-# Enable corepack and activate pnpm
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
-
-# Configure pnpm store
-RUN mkdir -p /pnpm/store && chmod -R 777 /pnpm
-ENV PNPM_HOME=/pnpm
-ENV PATH=$PNPM_HOME:$PATH
-RUN pnpm config set store-dir /pnpm/store
-
 # Copy package manifests and lock file
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
 # Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+RUN npm ci --omit=dev
 
 # Copy built bundle from builder stage
 COPY --from=builder /app/dist ./dist
