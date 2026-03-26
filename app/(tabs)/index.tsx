@@ -4,7 +4,7 @@ import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
 import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
-import { apiClient, ApiError } from "@/lib/api-client";
+import { simpleApiClient } from "@/lib/simple-api-client";
 import { getRoleLabel, getRoleColor } from "@/lib/role-formatter";
 import { useBranding } from "@/lib/branding-provider";
 import { Image } from "expo-image";
@@ -60,21 +60,9 @@ export default function HomeScreen() {
     setShowRegister(!showRegister);
   };
   
-  // Workshop count query
+  // Workshop count data from simple API (placeholder for now)
   const [workshopCount, setWorkshopCount] = useState<{ total: number } | null>(null);
   const [workshopError, setWorkshopError] = useState<string | null>(null);
-
-  // Fetch workshop count for admins
-  React.useEffect(() => {
-    if (user?.role === "admin" || user?.role === "finance") {
-      apiClient.getWorkshopCount()
-        .then(setWorkshopCount)
-        .catch((error) => {
-          console.error("Failed to fetch workshop count:", error);
-          setWorkshopError(error?.message || "Failed to load workshop count");
-        });
-    }
-  }, [user]);
 
   const handleLogin = async () => {
     console.log("[Login] Starting login process", {
@@ -104,9 +92,13 @@ export default function HomeScreen() {
     console.log("[Login] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      console.log("[Login] About to call apiClient.login");
-      const result = await apiClient.login({ email: email.trim(), password: password });
-      console.log("[Login] API call successful", { 
+      console.log("[Login] About to call simple API client");
+      const result = await simpleApiClient.login({ 
+        email: email.trim(), 
+        password: password 
+      });
+      
+      console.log("[Login] Simple API call successful", { 
         result,
         hasSessionToken: !!result.sessionToken,
         hasUser: !!result.user,
@@ -119,33 +111,37 @@ export default function HomeScreen() {
       }
       
       // Save session token and user info to storage for native auth
-      await setItem('app_session_token', result.sessionToken);
+      await setItem('app_session_token', result.sessionToken!);
       await setItem('manus-runtime-user-info', JSON.stringify(result.user));
       
       // Login successful - navigate to home
       console.log("[Login] Navigating to home screen");
       router.replace("/(tabs)");
     } catch (error: any) {
-      console.error("[Login] Error:", {
-        error,
-        errorMessage: error?.message,
-        errorType: error?.name,
-        errorCode: error?.code,
-        errorData: error?.data,
-        stack: error?.stack
-      });
+      console.error("[Login] Error:", error);
       
-      let errorMessage = "Invalid email or password. Please try again.";
-      if (error instanceof ApiError) {
-        errorMessage = error.message;
-      } else if (error?.message) {
-        errorMessage = error.message;
+      let errorMessage = "Login failed";
+      if (error && typeof error === 'object') {
+        if (error.message) {
+          errorMessage = error.message;
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
       
-      Alert.alert("Login Error", errorMessage);
+      // Show user-friendly error messages
+      if (errorMessage.includes("Invalid email or password")) {
+        errorMessage = "Invalid email or password";
+      } else if (errorMessage.includes("Invalid email address")) {
+        errorMessage = "Please enter a valid email address";
+      } else if (errorMessage.includes("Password must be at least 8 characters")) {
+        errorMessage = "Password must be at least 8 characters";
+      }
+      
+      Alert.alert("Login Failed", errorMessage);
     } finally {
-      console.log("[Login] Login process completed");
       setIsSigningIn(false);
+      console.log("[Login] Login process completed");
     }
   };
 
@@ -179,13 +175,14 @@ export default function HomeScreen() {
     console.log("[Register] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      const result = await apiClient.register({ 
+      const result = await simpleApiClient.register({ 
         name: name.trim(),
         email: email.trim(), 
         password: password,
         role: "student" // Default role
       });
-      console.log("[Register] API call successful", { result });
+      
+      console.log("[Register] Simple API call successful", { result });
       
       if (!result.success || !result.user) {
         throw new Error(result.error || "Registration failed");
@@ -204,24 +201,30 @@ export default function HomeScreen() {
       setEmail("");
       setPassword("");
     } catch (error: any) {
-      console.error("[Register] Error:", {
-        error,
-        errorMessage: error?.message,
-        errorType: error?.name,
-        stack: error?.stack
-      });
+      console.error("[Register] Error:", error);
       
-      let errorMessage = "Failed to create account. Please try again.";
-      if (error instanceof ApiError) {
-        errorMessage = error.message;
-      } else if (error?.message) {
-        errorMessage = error.message;
+      let errorMessage = "Registration failed";
+      if (error && typeof error === 'object') {
+        if (error.message) {
+          errorMessage = error.message;
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error;
       }
       
-      Alert.alert("Registration Error", errorMessage);
+      // Show user-friendly error messages
+      if (errorMessage.includes("Email already registered")) {
+        errorMessage = "An account with this email already exists";
+      } else if (errorMessage.includes("Invalid email address")) {
+        errorMessage = "Please enter a valid email address";
+      } else if (errorMessage.includes("Password must be at least 8 characters")) {
+        errorMessage = "Password must be at least 8 characters";
+      }
+      
+      Alert.alert("Registration Failed", errorMessage);
     } finally {
-      console.log("[Register] Registration process completed");
       setIsSigningIn(false);
+      console.log("[Register] Registration process completed");
     }
   };
 

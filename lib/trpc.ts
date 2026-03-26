@@ -1,5 +1,5 @@
 import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchStreamLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@/server/routers";
 import { getApiBaseUrl } from "@/constants/oauth";
@@ -9,7 +9,7 @@ import { getItem, setItem } from './storage';
 /**
  * tRPC React client for type-safe API calls.
  *
- * IMPORTANT (tRPC v11): The `transformer` must be inside `httpBatchLink`,
+ * IMPORTANT (tRPC v11): The `transformer` must be inside `httpBatchStreamLink`,
  * NOT at the root createClient level. This ensures client and server
  * use the same serialization format (superjson).
  */
@@ -25,9 +25,9 @@ export function createTRPCClient() {
   
   return trpc.createClient({
     links: [
-      httpBatchLink({
+      httpBatchStreamLink({
         url: `${apiBaseUrl}/api/trpc`,
-        // tRPC v11: transformer MUST be inside httpBatchLink, not at root
+        // Put transformer back - removing it might cause other issues
         transformer: superjson as any,
         async headers() {
           const headers: Record<string, string> = {};
@@ -73,8 +73,6 @@ export function createTRPCClient() {
           console.log('[tRPC] Final headers:', Object.keys(headers));
           return headers;
         },
-        // Use default fetch for tRPC v11
-        // Custom fetch breaks streaming responses and JSON format parsing
       }),
     ],
   });

@@ -54,7 +54,12 @@ class ApiClient {
     }
 
     if (!response.ok) {
-      const errorMessage = data.error || data.message || response.statusText;
+      // Handle tRPC error format
+      let errorMessage = data?.error?.json?.message || 
+                     data?.error?.message || 
+                     data?.message || 
+                     response.statusText;
+      
       throw new ApiError(errorMessage, response.status, data);
     }
 
@@ -87,12 +92,15 @@ class ApiClient {
     }
   }
 
-  // Auth endpoints - using REST API
+  // Auth endpoints - using tRPC API with correct format
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      const result = await this.request<{ user: User; sessionToken: string }>("/auth/login", {
+      const result = await this.request<{ user: User; sessionToken: string }>("/trpc/auth.login", {
         method: "POST",
-        body: JSON.stringify(credentials),
+        body: JSON.stringify({
+          json: credentials,
+          meta: {}
+        }),
       });
 
       return {
@@ -114,9 +122,12 @@ class ApiClient {
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      const result = await this.request<{ user: User; sessionToken: string }>("/auth/register", {
+      const result = await this.request<{ user: User; sessionToken: string }>("/trpc/auth.register", {
         method: "POST",
-        body: JSON.stringify(userData),
+        body: JSON.stringify({
+          json: userData,
+          meta: {}
+        }),
       });
 
       return {
@@ -137,15 +148,19 @@ class ApiClient {
   }
 
   async logout(): Promise<{ success: boolean }> {
-    return this.request<{ success: boolean }>("/auth/logout", {
+    return this.request<{ success: boolean }>("/trpc/auth.logout", {
       method: "POST",
+      body: JSON.stringify({
+        json: {},
+        meta: {}
+      }),
     });
   }
 
   async getCurrentUser(): Promise<User | null> {
     try {
-      const response = await this.request<{ user: User }>("/auth/me");
-      return response.user;
+      const response = await this.request<User>("/trpc/auth.me");
+      return response;
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
         return null; // Not authenticated
