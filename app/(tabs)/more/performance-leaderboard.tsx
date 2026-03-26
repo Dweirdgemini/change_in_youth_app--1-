@@ -2,10 +2,10 @@ import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, FlatList }
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 export default function PerformanceLeaderboardScreen() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { data: leaderboard, isLoading } = trpc.performanceRanking.getPerformanceLeaderboard.useQuery();
 
   // Check if user is admin

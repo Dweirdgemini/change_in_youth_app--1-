@@ -4,11 +4,11 @@ import { trpc } from "@/lib/trpc";
 import { router, useLocalSearchParams } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 export default function PersonalDevelopmentScreen() {
   const colors = useColors();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { userId } = useLocalSearchParams<{ userId: string }>();
   const targetUserId = parseInt(userId || "0");
   

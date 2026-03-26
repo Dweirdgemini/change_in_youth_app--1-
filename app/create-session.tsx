@@ -1,15 +1,31 @@
 import { View, Text, TouchableOpacity, Pressable, TextInput, ScrollView, Alert, ActivityIndicator, Platform } from "react-native";
 import { ScreenWithBackButton } from "@/components/screen-with-back-button";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 
+type Project = {
+  id: number;
+  name: string;
+  code: string;
+  description: string | null;
+  totalBudget: string;
+  budget: string;
+  spentBudget: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  status: "active" | "completed" | "archived" | "on_hold";
+  createdAt: Date;
+  updatedAt: Date;
+  organizationId: number;
+};
+
 export default function CreateSessionScreen() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   const { data: projects, isLoading: projectsLoading } = (trpc.finance as any).getProjects.useQuery(undefined, {
     enabled: isAuthenticated,
-  });
+  }) as { data: Project[] | undefined; isLoading: boolean; };
 
   // Must declare mutation hook at top level before any conditional returns
   const createSessionMutation = trpc.sessions.createSessionRequest.useMutation();

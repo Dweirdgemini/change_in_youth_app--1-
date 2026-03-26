@@ -1,7 +1,7 @@
 import { Text, View, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { RefreshControl } from "@/components/refresh-control";
@@ -10,11 +10,12 @@ import { ErrorState } from "@/components/error-state";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/use-colors";
+import { type Invoice, type BudgetLine, type Project } from "@/shared/types";
 
 type DateRange = "this_month" | "this_quarter" | "this_year" | "all_time";
 
 export default function FinanceScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const [selectedTab, setSelectedTab] = useState<"overview" | "invoices" | "budget">("overview");
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
   const [dateRange, setDateRange] = useState<DateRange>("this_month");
@@ -99,11 +100,11 @@ export default function FinanceScreen() {
 
   // TEAM MEMBER VIEW - Personal Earnings Only
   if (!isAdmin) {
-    const totalEarnings = myInvoices?.reduce((sum, inv) => sum + parseFloat(inv.totalAmount), 0) || 0;
-    const paidEarnings = myInvoices?.filter((inv) => inv.status === "paid")
-      .reduce((sum, inv) => sum + parseFloat(inv.totalAmount), 0) || 0;
-    const pendingEarnings = myInvoices?.filter((inv) => inv.status === "pending" || inv.status === "approved")
-      .reduce((sum, inv) => sum + parseFloat(inv.totalAmount), 0) || 0;
+    const totalEarnings = myInvoices?.reduce((sum: number, inv: Invoice) => sum + parseFloat(inv.totalAmount), 0) || 0;
+    const paidEarnings = myInvoices?.filter((inv: Invoice) => inv.status === "paid")
+      .reduce((sum: number, inv: Invoice) => sum + parseFloat(inv.totalAmount), 0) || 0;
+    const pendingEarnings = myInvoices?.filter((inv: Invoice) => inv.status === "pending" || inv.status === "approved")
+      .reduce((sum: number, inv: Invoice) => sum + parseFloat(inv.totalAmount), 0) || 0;
 
     return (
       <ScreenContainer>
@@ -163,13 +164,13 @@ export default function FinanceScreen() {
               </View>
               <View className="flex-1 bg-surface rounded-2xl p-4 border border-border">
                 <Text className="text-2xl font-bold text-success">
-                  {myInvoices?.filter((inv) => inv.status === "paid").length || 0}
+                  {myInvoices?.filter((inv: Invoice) => inv.status === "paid").length || 0}
                 </Text>
                 <Text className="text-sm text-muted mt-1">Paid</Text>
               </View>
               <View className="flex-1 bg-surface rounded-2xl p-4 border border-border">
                 <Text className="text-2xl font-bold text-warning">
-                  {myInvoices?.filter((inv) => inv.status === "pending").length || 0}
+                  {myInvoices?.filter((inv: Invoice) => inv.status === "pending").length || 0}
                 </Text>
                 <Text className="text-sm text-muted mt-1">Pending</Text>
               </View>
@@ -189,7 +190,7 @@ export default function FinanceScreen() {
               ) : loadingMyInvoices ? (
                 <ActivityIndicator />
               ) : myInvoices && myInvoices.length > 0 ? (
-                myInvoices.map((invoice) => (
+                myInvoices.map((invoice: Invoice) => (
                   <TouchableOpacity
                     key={invoice.id}
                     className="bg-surface rounded-2xl p-4 border border-border active:opacity-70"
@@ -259,17 +260,17 @@ export default function FinanceScreen() {
   // ADMIN VIEW - Full Budget Overview
   // Filter budget lines by selected project
   const filteredBudgetLines = selectedProjectId
-    ? budgetLines?.filter((line) => line.projectId === selectedProjectId)
+    ? budgetLines?.filter((line: BudgetLine) => line.projectId === selectedProjectId)
     : budgetLines;
 
-  const selectedProject = projects?.find((p) => p.id === selectedProjectId);
+  const selectedProject = projects?.find((p: Project) => p.id === selectedProjectId);
 
-  const totalBudget = filteredBudgetLines?.reduce((sum, line) => sum + parseFloat(line.allocatedAmount), 0) || 0;
-  const totalSpent = filteredBudgetLines?.reduce((sum, line) => sum + parseFloat(line.spentAmount || "0"), 0) || 0;
+  const totalBudget = filteredBudgetLines?.reduce((sum: number, line: BudgetLine) => sum + parseFloat(line.allocatedAmount), 0) || 0;
+  const totalSpent = filteredBudgetLines?.reduce((sum: number, line: BudgetLine) => sum + parseFloat(line.spentAmount || "0"), 0) || 0;
   const totalRemaining = totalBudget - totalSpent;
 
-  const pendingInvoices = allInvoices?.filter((inv) => inv.status === "pending").length || 0;
-  const approvedInvoices = allInvoices?.filter((inv) => inv.status === "approved").length || 0;
+  const pendingInvoices = allInvoices?.filter((inv: Invoice) => inv.status === "pending").length || 0;
+  const approvedInvoices = allInvoices?.filter((inv: Invoice) => inv.status === "approved").length || 0;
 
   return (
     <ScreenContainer>
@@ -302,7 +303,7 @@ export default function FinanceScreen() {
                     All Projects
                   </Text>
                 </TouchableOpacity>
-                {projects?.map((project) => (
+                {projects?.map((project: Project) => (
                   <TouchableOpacity
                     key={project.id}
                     className={`px-4 py-2 rounded-full ${
@@ -444,7 +445,7 @@ export default function FinanceScreen() {
                 {loadingAllInvoices ? (
                   <ActivityIndicator />
                 ) : allInvoices && allInvoices.length > 0 ? (
-                  allInvoices.slice(0, 5).map((invoice) => (
+                  allInvoices.slice(0, 5).map((invoice: Invoice) => (
                     <TouchableOpacity
                       key={invoice.id}
                       className="bg-surface rounded-2xl p-4 border border-border active:opacity-70"
@@ -456,7 +457,7 @@ export default function FinanceScreen() {
                             {invoice.description || "Invoice"}
                           </Text>
                           <Text className="text-sm text-muted mt-1">
-                            {new Date(invoice.submittedAt).toLocaleDateString()}
+                            {invoice.submittedAt ? new Date(invoice.submittedAt).toLocaleDateString() : 'N/A'}
                           </Text>
                         </View>
                         <View className="items-end">
@@ -518,7 +519,7 @@ export default function FinanceScreen() {
               {loadingAllInvoices ? (
                 <ActivityIndicator />
               ) : allInvoices && allInvoices.length > 0 ? (
-                allInvoices.map((invoice) => (
+                allInvoices.map((invoice: Invoice) => (
                   <TouchableOpacity
                     key={invoice.id}
                     className="bg-surface rounded-2xl p-4 border border-border active:opacity-70"
@@ -651,7 +652,7 @@ export default function FinanceScreen() {
               {loadingBudget ? (
                 <ActivityIndicator />
               ) : filteredBudgetLines && filteredBudgetLines.length > 0 ? (
-                filteredBudgetLines.map((line) => {
+                filteredBudgetLines.map((line: BudgetLine) => {
                   const allocated = parseFloat(line.allocatedAmount);
                   const spent = parseFloat(line.spentAmount || "0");
                   const variance = allocated - spent;

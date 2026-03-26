@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { getRoleLabel, getRoleColor } from "@/lib/role-formatter";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { FeatureCard } from "@/components/feature-card";
@@ -12,7 +12,7 @@ import { useState } from "react";
 import { setItem } from '@/lib/storage';
 
 export default function MoreScreen() {
-  const { user, isAuthenticated, loading, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout } = useAuthContext();
   const isSuperAdmin = user?.role === "super_admin";
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 

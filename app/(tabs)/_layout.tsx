@@ -6,14 +6,14 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Platform } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { useBranding } from "@/lib/branding-provider";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { canAccessFinancials, canAccessProjects, canAccessSocialMedia } from "@/lib/permissions";
 import type { UserRole } from "@/lib/permissions";
 
 export default function TabLayout() {
   const colors = useColors();
   const { primaryColor } = useBranding();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const insets = useSafeAreaInsets();
   const bottomPadding = Platform.OS === "web" ? 16 : Math.max(insets.bottom, 12);
   const tabBarHeight = 70 + bottomPadding;

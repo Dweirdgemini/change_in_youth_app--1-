@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { ScreenWithBackButton } from "@/components/screen-with-back-button";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { useState, useEffect, useRef } from "react";
 
 export default function ConversationScreen() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   const params = useLocalSearchParams();
   const otherUserId = Number(params.userId);
   const scrollViewRef = useRef<ScrollView>(null);

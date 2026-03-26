@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ScrollView, Text, View, TouchableOpacity, TextInput, ActivityIndicator, Alert, Platform } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { useColors } from "@/hooks/use-colors";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 
 export default function CreateTaskScreen() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuthContext();
   const colors = useColors();
   
   const [title, setTitle] = useState("");

@@ -4,14 +4,14 @@ import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import { router, useLocalSearchParams } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import * as Sharing from "expo-sharing";
 
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const sessionId = parseInt(id || "0", 10);
   const colors = useColors();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const { data: session, isLoading } = (trpc.scheduling as any).getSessionById.useQuery(
     { sessionId },

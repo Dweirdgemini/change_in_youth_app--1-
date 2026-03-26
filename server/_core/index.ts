@@ -10,6 +10,7 @@ import { setupQRAuthRoutes } from "../routes/qr-auth";
 import { setupConsentFormRoutes } from "../routes/consent-form";
 import { registerMagicLinkRoutes } from "../routes/magic-link";
 import { setupDeleteAccountRoutes } from "../routes/delete-account";
+import { registerAuthRestRoutes } from "../routes/auth-rest";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 
@@ -106,6 +107,7 @@ async function startServer() {
   setupConsentFormRoutes(app);
   registerMagicLinkRoutes(app);
   setupDeleteAccountRoutes(app);
+  registerAuthRestRoutes(app);
 
   // NOTE: Test login endpoints removed for production security.
   // Use OAuth flow for all authentication in production.

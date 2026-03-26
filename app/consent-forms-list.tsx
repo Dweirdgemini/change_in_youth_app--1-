@@ -9,7 +9,7 @@ import {
 import { ScreenWithBackButton } from "@/components/screen-with-back-button";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { useColors } from "@/hooks/use-colors";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -22,7 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
  */
 export default function ConsentFormsListScreen() {
   const colors = useColors();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   
   const { data: projects, isLoading: projectsLoading } = (trpc.finance as any).getProjects.useQuery(
     undefined,

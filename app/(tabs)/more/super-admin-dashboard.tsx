@@ -2,10 +2,10 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "rea
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 export default function SuperAdminDashboardScreen() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { data: organizations, isLoading } = trpc.organizations.getAllOrganizations.useQuery();
 
   // Only super admins can access this page

@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Alert, ScrollView, Platform } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 
 export default function SessionRequestsScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   
   // Fetch pending session requests

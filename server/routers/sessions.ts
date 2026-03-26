@@ -227,6 +227,9 @@ export const sessionsRouter = router({
         approvalStatus: req.session.approvalStatus,
         projectName: req.project?.name || "Unknown Project",
         createdAt: req.session.createdAt,
+        paymentPerFacilitator: req.session.paymentPerFacilitator,
+        sessionNumber: req.session.sessionNumber,
+        totalSessions: req.session.totalSessions,
       }));
     }),
 

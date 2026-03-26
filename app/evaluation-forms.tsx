@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView, Linking, Alert, Modal, Share, Platform, TextInput } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { router } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import * as WebBrowser from "expo-web-browser";
 import QRCode from "react-native-qrcode-svg";
 import { useState } from "react";
@@ -43,7 +43,7 @@ const evaluationForms = [
 ];
 
 export default function EvaluationFormsScreen() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuthContext();
   const [selectedFormForQR, setSelectedFormForQR] = useState<typeof evaluationForms[0] | null>(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedFormForEmail, setSelectedFormForEmail] = useState<typeof evaluationForms[0] | null>(null);

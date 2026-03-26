@@ -1,11 +1,11 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 
 export default function MessagesScreen() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   
   const { data: conversations, isLoading } = trpc.privateMessages.getConversationList.useQuery(
     undefined,

@@ -1,6 +1,6 @@
 import * as Api from "@/lib/_core/api";
 import * as Auth from "@/lib/_core/auth";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { getItem } from '@/lib/storage';
@@ -14,9 +14,18 @@ export function useAuth(options?: UseAuthOptions) {
   const [user, setUser] = useState<Auth.User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const hasFetched = useRef(false);
 
   const fetchUser = useCallback(async () => {
     console.log("[useAuth] fetchUser called");
+    
+    // Prevent multiple simultaneous calls
+    if (hasFetched.current) {
+      console.log("[useAuth] Already fetching, skipping duplicate call");
+      return;
+    }
+    hasFetched.current = true;
+    
     try {
       setLoading(true);
       setError(null);
@@ -102,6 +111,7 @@ export function useAuth(options?: UseAuthOptions) {
       setUser(null);
     } finally {
       setLoading(false);
+      hasFetched.current = false; // Reset to allow future calls
       console.log("[useAuth] fetchUser completed, loading:", false);
     }
   }, []);
@@ -158,7 +168,7 @@ export function useAuth(options?: UseAuthOptions) {
       console.log("[useAuth] autoFetch disabled, setting loading to false");
       setLoading(false);
     }
-  }, [autoFetch, fetchUser]);
+  }, [autoFetch]); // ✅ Remove fetchUser dependency to prevent loops
 
   useEffect(() => {
     console.log("[useAuth] State updated:", {

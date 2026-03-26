@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image, Platform } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { getRoleLabel } from "@/lib/role-formatter";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import { trpc } from "@/lib/trpc";
 
 export default function ProfileSettingsScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const utils = trpc.useUtils();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");

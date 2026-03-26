@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Alert, Modal, ScrollView, TextInput, Pressable } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { useColors } from "@/hooks/use-colors";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export default function TrainingScreen() {
   const colors = useColors();
-  const { isAuthenticated, loading: authLoading, user } = useAuth();
+  const { isAuthenticated, loading: authLoading, user } = useAuthContext();
   const [uploadModalVisible, setUploadModalVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -52,7 +52,7 @@ export default function TrainingScreen() {
     );
   }
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = (category: string | null) => {
     switch (category) {
       case "safeguarding":
         return "🛡️";
@@ -134,7 +134,7 @@ export default function TrainingScreen() {
                 onPress={() => handleStartModule(item)}
               >
                 <View className="flex-row items-start gap-3">
-                  <Text className="text-3xl">{getCategoryIcon(item.category)}</Text>
+                  <Text className="text-3xl">{getCategoryIcon(item.category || "general")}</Text>
                   <View className="flex-1">
                     <View className="flex-row items-center gap-2 mb-1">
                       <Text className="text-base font-semibold text-foreground flex-1">
@@ -154,7 +154,7 @@ export default function TrainingScreen() {
                     <View className="flex-row items-center gap-2 mt-2">
                       <View className="bg-primary/10 px-3 py-1 rounded-full">
                         <Text className="text-primary text-xs font-medium">
-                          {getCategoryLabel(item.category)}
+                          {getCategoryLabel(item.category || "general")}
                         </Text>
                       </View>
                       <Text className="text-xs text-muted leading-relaxed">

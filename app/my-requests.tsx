@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Platform, RefreshControl } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 
 export default function MyRequestsScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const [refreshing, setRefreshing] = useState(false);
   
   const { data: requests, isLoading, refetch } = trpc.sessions.getMyRequests.useQuery(

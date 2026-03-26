@@ -16,14 +16,14 @@ import * as FileSystem from "expo-file-system/legacy";
 import { EncodingType } from "expo-file-system/legacy";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { trpc } from "@/lib/trpc";
 
 export default function ProjectChatScreen() {
   const router = useRouter();
   const { chatId } = useLocalSearchParams();
   const colors = useColors();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const scrollViewRef = useRef<ScrollView>(null);
   const [message, setMessage] = useState("");
   const [isUploading, setIsUploading] = useState(false);

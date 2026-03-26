@@ -2,11 +2,11 @@ import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert, Platform } 
 import { ScreenContainer } from "@/components/screen-container";
 import { router } from "expo-router";
 import { useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function CreateVideoMeetingScreen() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());

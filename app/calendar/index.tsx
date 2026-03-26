@@ -3,10 +3,10 @@ import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 import { router } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 export default function CalendarScreen() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const isAdmin = user?.role === "admin" || user?.role === "finance";
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");

@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput, Modal } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 
 export default function PayrollManagementScreen() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   
   const [showAddPayRate, setShowAddPayRate] = useState(false);
   const [showUploadPayslip, setShowUploadPayslip] = useState(false);

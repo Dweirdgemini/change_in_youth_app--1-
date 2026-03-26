@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Pressable, Platform, ScrollView } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { generateICSForMultipleEvents, downloadICSFile, type CalendarEvent } from "@/lib/calendar-export";
@@ -11,9 +11,10 @@ import { RefreshControl } from "@/components/refresh-control";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
 import { useState, useMemo } from "react";
+import type { SessionWithFacilitators, ScheduleActivity } from "@/shared/types";
 
 export default function ScheduleScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const colors = useColors();
   const [selectedFilter, setSelectedFilter] = useState<"all" | "upcoming" | "completed">("upcoming");
   const [acceptanceFilter, setAcceptanceFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
@@ -22,7 +23,7 @@ export default function ScheduleScreen() {
   const { data: sessions, isLoading, refetch, error: sessionsError } = (trpc.scheduling as any).getMySessions.useQuery(
     undefined,
     { enabled: isAuthenticated }
-  );
+  ) as { data: SessionWithFacilitators[] | undefined; isLoading: boolean; refetch: () => void; error: any };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -40,11 +41,13 @@ export default function ScheduleScreen() {
   );
   
   // Combine sessions and pending requests
-  const allActivities = [
+  const allActivities: ScheduleActivity[] = [
     ...(sessions || []),
     ...(myRequests?.filter(r => r.approvalStatus === "pending").map(r => ({
       ...r,
       isPendingRequest: true,
+      facilitators: [],
+      acceptanceStatus: "pending" as const,
     })) || []),
   ];
   const acceptSession = (trpc.scheduling as any).acceptSession.useMutation();
@@ -80,7 +83,7 @@ export default function ScheduleScreen() {
     return {
       totalHours: Math.round(totalHours * 10) / 10,
       totalSessions: weekSessions.length,
-      totalStaff: new Set(weekSessions.flatMap(s => s.facilitators || [])).size,
+      totalStaff: new Set(weekSessions.flatMap(s => s.facilitators)).size,
       totalCost: totalCost
     };
   }, [sessions]);
@@ -115,7 +118,7 @@ export default function ScheduleScreen() {
   
   // Separate unassigned sessions
   const unassignedSessions = sessions?.filter((session) => {
-    return (!(session as any).facilitators || (session as any).facilitators.length === 0) && session.status === "scheduled";
+    return (session.facilitators.length === 0) && session.status === "scheduled";
   }) || [];
   
   const filteredSessions = allActivities?.filter((session) => {
@@ -127,7 +130,7 @@ export default function ScheduleScreen() {
     
     // Apply acceptance status filter
     if (acceptanceFilter !== "all") {
-      const status = (session as any).acceptanceStatus || "pending";
+      const status = session.acceptanceStatus || "pending";
       if (acceptanceFilter !== status) return false;
     }
     
@@ -394,10 +397,10 @@ export default function ScheduleScreen() {
                 const endDate = new Date(session.endTime);
                 const isToday = startDate.toDateString() === now.toDateString();
 
-                const isPending = (session as any).acceptanceStatus === "pending";
-                const isAccepted = (session as any).acceptanceStatus === "accepted";
-                const isRejected = (session as any).acceptanceStatus === "rejected";
-                const isPendingRequest = (session as any).isPendingRequest;
+                const isPending = session.acceptanceStatus === "pending";
+                const isAccepted = session.acceptanceStatus === "accepted";
+                const isRejected = session.acceptanceStatus === "rejected";
+                const isPendingRequest = 'isPendingRequest' in session ? session.isPendingRequest : false;
 
                 return (
                   <View
@@ -417,7 +420,7 @@ export default function ScheduleScreen() {
                             {endDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                           </Text>
                         </View>
-                        {session.sessionNumber && session.totalSessions && (
+                        {'sessionNumber' in session && session.sessionNumber && 'totalSessions' in session && session.totalSessions && (
                           <Text className="text-xs text-muted leading-relaxed mt-1">
                             Session {session.sessionNumber} of {session.totalSessions}
                           </Text>

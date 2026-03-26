@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { useState } from "react";
 
@@ -41,7 +41,7 @@ const mockNotifications = [
 ];
 
 export default function NotificationsScreen() {
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuthContext();
   const [notifications, setNotifications] = useState(mockNotifications);
 
   if (authLoading) {

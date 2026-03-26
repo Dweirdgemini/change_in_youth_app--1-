@@ -1,5 +1,5 @@
 import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchStreamLink } from "@trpc/client";
+import { httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@/server/routers";
 import { getApiBaseUrl } from "@/constants/oauth";
@@ -20,11 +20,14 @@ export const trpc = createTRPCReact<AppRouter>();
  * Call this once in your app's root layout.
  */
 export function createTRPCClient() {
+  const apiBaseUrl = getApiBaseUrl();
+  console.log('[tRPC] Creating client with base URL:', apiBaseUrl);
+  
   return trpc.createClient({
     links: [
-      httpBatchStreamLink({
-        url: `${getApiBaseUrl()}/api/trpc`,
-        // tRPC v11: transformer MUST be inside httpBatchStreamLink, not at root
+      httpBatchLink({
+        url: `${apiBaseUrl}/api/trpc`,
+        // tRPC v11: transformer MUST be inside httpBatchLink, not at root
         transformer: superjson as any,
         async headers() {
           const headers: Record<string, string> = {};
@@ -32,9 +35,11 @@ export function createTRPCClient() {
           // Add tRPC React Native source header
           headers['x-trpc-source'] = 'react-native';
           
+          console.log('[tRPC] Request headers setup - starting');
+          
           // DEV MODE BYPASS - Remove before production!
           // Check URL parameter first, then storage
-          if (typeof window !== 'undefined') {
+          if (typeof window !== 'undefined' && window.location?.search) {
             const urlParams = new URLSearchParams(window.location.search);
             const devModeParam = urlParams.get('dev_mode');
             const devModeStorage = await getItem('dev_mode');
@@ -60,17 +65,16 @@ export function createTRPCClient() {
           const token = await Auth.getSessionToken();
           if (token) {
             headers['Authorization'] = `Bearer ${token}`;
+            console.log('[tRPC] ✅ Authorization header added (token length:', token.length, ')');
+          } else {
+            console.log('[tRPC] ❌ No session token found');
           }
           
+          console.log('[tRPC] Final headers:', Object.keys(headers));
           return headers;
         },
-        // Custom fetch to include credentials for cookie-based auth
-        fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            credentials: "include",
-          });
-        },
+        // Use default fetch for tRPC v11
+        // Custom fetch breaks streaming responses and JSON format parsing
       }),
     ],
   });

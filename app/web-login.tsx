@@ -4,7 +4,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { getLoginUrl } from "@/constants/oauth";
 import * as WebBrowser from "expo-web-browser";
 import { useRouter } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 /**
  * Web Login Screen - For QR Code Authentication
@@ -21,7 +21,7 @@ export default function WebLoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuthContext();
 
   // If already logged in, redirect to home
   useEffect(() => {

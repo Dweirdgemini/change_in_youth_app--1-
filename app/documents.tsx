@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, TextInput, Modal, ScrollView, Platform } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import * as DocumentPicker from "expo-document-picker";
 
 export default function DocumentsScreen() {
   const colors = useColors();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   const { data: documents, isLoading, refetch } = trpc.documents.listDocuments.useQuery(undefined, {
     enabled: isAuthenticated,
   });

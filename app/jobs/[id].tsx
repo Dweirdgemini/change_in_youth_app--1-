@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Share } from "react-native";
 import { ScreenWithBackButton } from "@/components/screen-with-back-button";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,7 +8,7 @@ import { useColors } from "@/hooks/use-colors";
 
 export default function JobDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuthContext();
   const colors = useColors();
   const { data: job, isLoading } = trpc.jobs.getJobById.useQuery(
     { jobId: Number(id) },

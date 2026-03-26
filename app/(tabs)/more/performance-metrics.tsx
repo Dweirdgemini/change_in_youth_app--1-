@@ -1,11 +1,11 @@
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 
 export default function PerformanceMetricsScreen() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { data: metrics, isLoading } = trpc.performanceRanking.getUserPerformanceMetrics.useQuery(
     { userId: user?.id || 0 },
     { enabled: !!user?.id }

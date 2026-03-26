@@ -2,12 +2,12 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Modal, Ale
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { useLocalSearchParams, router } from "expo-router";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { useState } from "react";
 
 export default function DayDetailScreen() {
   const { date } = useLocalSearchParams<{ date: string }>();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const isAdmin = user?.role === "admin" || user?.role === "finance";
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [showAssignModal, setShowAssignModal] = useState(false);

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Alert, Platform, ActivityIndicator, KeyboardAvoidingView, TextInput } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
-import { trpc } from "@/lib/trpc";
+import { apiClient, ApiError } from "@/lib/api-client";
 import { getRoleLabel, getRoleColor } from "@/lib/role-formatter";
 import { useBranding } from "@/lib/branding-provider";
 import { Image } from "expo-image";
@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/empty-state";
 import { setItem } from '@/lib/storage';
 
 export default function HomeScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const { organizationName, logoUrl, primaryColor } = useBranding();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isQuickAdminLoading, setIsQuickAdminLoading] = useState(false);
@@ -60,14 +60,21 @@ export default function HomeScreen() {
     setShowRegister(!showRegister);
   };
   
-  const { data: workshopCount, error: workshopError } = trpc.admin.getWorkshopCount.useQuery(
-    undefined,
-    { enabled: user?.role === "admin" || user?.role === "finance" }
-  );
+  // Workshop count query
+  const [workshopCount, setWorkshopCount] = useState<{ total: number } | null>(null);
+  const [workshopError, setWorkshopError] = useState<string | null>(null);
 
-  // Email/password login mutation
-  const loginMutation = trpc.auth.login.useMutation();
-  const registerMutation = trpc.auth.register.useMutation();
+  // Fetch workshop count for admins
+  React.useEffect(() => {
+    if (user?.role === "admin" || user?.role === "finance") {
+      apiClient.getWorkshopCount()
+        .then(setWorkshopCount)
+        .catch((error) => {
+          console.error("Failed to fetch workshop count:", error);
+          setWorkshopError(error?.message || "Failed to load workshop count");
+        });
+    }
+  }, [user]);
 
   const handleLogin = async () => {
     console.log("[Login] Starting login process", {
@@ -97,11 +104,24 @@ export default function HomeScreen() {
     console.log("[Login] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      const result = await loginMutation.mutateAsync({ email: email.trim(), password: password });
-      console.log("[Login] API call successful", { result });
+      console.log("[Login] About to call apiClient.login");
+      const result = await apiClient.login({ email: email.trim(), password: password });
+      console.log("[Login] API call successful", { 
+        result,
+        hasSessionToken: !!result.sessionToken,
+        hasUser: !!result.user,
+        userId: result.user?.id,
+        userEmail: result.user?.email
+      });
+      
+      if (!result.success || !result.user || !result.sessionToken) {
+        throw new Error(result.error || "Login failed");
+      }
+      
       // Save session token and user info to storage for native auth
-      if (result.sessionToken) await setItem('app_session_token', result.sessionToken);
-      if (result.user) await setItem('manus-runtime-user-info', JSON.stringify(result.user));
+      await setItem('app_session_token', result.sessionToken);
+      await setItem('manus-runtime-user-info', JSON.stringify(result.user));
+      
       // Login successful - navigate to home
       console.log("[Login] Navigating to home screen");
       router.replace("/(tabs)");
@@ -110,12 +130,19 @@ export default function HomeScreen() {
         error,
         errorMessage: error?.message,
         errorType: error?.name,
+        errorCode: error?.code,
+        errorData: error?.data,
         stack: error?.stack
       });
-      Alert.alert(
-        "Login Error", 
-        error?.message || "Invalid email or password. Please try again."
-      );
+      
+      let errorMessage = "Invalid email or password. Please try again.";
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert("Login Error", errorMessage);
     } finally {
       console.log("[Login] Login process completed");
       setIsSigningIn(false);
@@ -152,13 +179,18 @@ export default function HomeScreen() {
     console.log("[Register] Validation passed - starting API call");
     setIsSigningIn(true);
     try {
-      const result = await registerMutation.mutateAsync({ 
+      const result = await apiClient.register({ 
         name: name.trim(),
         email: email.trim(), 
         password: password,
         role: "student" // Default role
       });
       console.log("[Register] API call successful", { result });
+      
+      if (!result.success || !result.user) {
+        throw new Error(result.error || "Registration failed");
+      }
+      
       // Registration successful
       Alert.alert(
         "Success", 
@@ -178,10 +210,15 @@ export default function HomeScreen() {
         errorType: error?.name,
         stack: error?.stack
       });
-      Alert.alert(
-        "Registration Error", 
-        error?.message || "Failed to create account. Please try again."
-      );
+      
+      let errorMessage = "Failed to create account. Please try again.";
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert("Registration Error", errorMessage);
     } finally {
       console.log("[Register] Registration process completed");
       setIsSigningIn(false);

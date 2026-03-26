@@ -62,7 +62,11 @@ export const schedulingRouter = router({
       const facilitatorsBySession = new Map<number, Array<{id:number;name:string;email:string}>>();
       for (const row of facilitatorRows) {
         const arr = facilitatorsBySession.get(row.sessionId) ?? [];
-        arr.push({ id: row.id, name: row.name, email: row.email });
+        arr.push({ 
+          id: row.id, 
+          name: row.name || "Unknown", 
+          email: row.email || "" 
+        });
         facilitatorsBySession.set(row.sessionId, arr);
       }
 
@@ -323,7 +327,36 @@ export const schedulingRouter = router({
       .where(inArray(sessions.id, sessionIds))
       .orderBy(desc(sessions.startTime));
 
-    return mySessions;
+    // Add facilitators to each session
+    const facilitatorRows = sessionIds.length
+      ? await db
+          .select({
+            sessionId: sessionFacilitators.sessionId,
+            id: users.id,
+            name: users.name,
+            email: users.email,
+          })
+          .from(sessionFacilitators)
+          .innerJoin(users, eq(sessionFacilitators.userId, users.id))
+          .where(inArray(sessionFacilitators.sessionId, sessionIds))
+      : [];
+
+    const facilitatorsBySession = new Map<number, Array<{id:number;name:string;email:string}>>();
+    for (const row of facilitatorRows) {
+      const arr = facilitatorsBySession.get(row.sessionId) ?? [];
+      arr.push({ 
+          id: row.id, 
+          name: row.name || "Unknown", 
+          email: row.email || "" 
+        });
+      facilitatorsBySession.set(row.sessionId, arr);
+    }
+
+    // Add facilitators to results
+    return mySessions.map(s => ({
+      ...s,
+      facilitators: facilitatorsBySession.get(s.id) ?? [],
+    }));
   }),
 
   // Get facilitator availability
@@ -535,9 +568,68 @@ export const schedulingRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      // Call the canonical getSessions procedure
-      const caller = schedulingRouter.createCaller(ctx);
-      return caller.getSessions(input);
+      // Call the canonical getSessions procedure by recreating the logic
+      // This avoids the circular reference issue
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      let query = db.select().from(sessions);
+      
+      const conditions = [];
+      if (input.projectId) conditions.push(eq(sessions.projectId, input.projectId));
+      if (input.startDate) conditions.push(gte(sessions.startTime, new Date(input.startDate)));
+      if (input.endDate) conditions.push(lte(sessions.endTime, new Date(input.endDate)));
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions)) as any;
+      }
+
+      let results = await query.orderBy(desc(sessions.startTime));
+
+      // Filter by facilitator if specified
+      if (input.facilitatorId) {
+        const facilitatorSessions = await db
+          .select({ sessionId: sessionFacilitators.sessionId })
+          .from(sessionFacilitators)
+          .where(eq(sessionFacilitators.userId, input.facilitatorId));
+        
+        const sessionIds = facilitatorSessions.map((s) => s.sessionId);
+        results = results.filter((s) => sessionIds.includes(s.id));
+      }
+
+      // Add facilitators to each session
+      const sessionIds = results.map(s => s.id).filter(Boolean) as number[];
+      
+      const facilitatorRows = sessionIds.length
+        ? await db
+            .select({
+              sessionId: sessionFacilitators.sessionId,
+              id: users.id,
+              name: users.name,
+              email: users.email,
+            })
+            .from(sessionFacilitators)
+            .innerJoin(users, eq(sessionFacilitators.userId, users.id))
+            .where(inArray(sessionFacilitators.sessionId, sessionIds))
+        : [];
+
+      const facilitatorsBySession = new Map<number, Array<{id:number;name:string;email:string}>>();
+      for (const row of facilitatorRows) {
+        const arr = facilitatorsBySession.get(row.sessionId) ?? [];
+        arr.push({ 
+          id: row.id, 
+          name: row.name || "Unknown", 
+          email: row.email || "" 
+        });
+        facilitatorsBySession.set(row.sessionId, arr);
+      }
+
+      // Add facilitators and acceptanceStatus to results
+      return results.map(s => ({
+        ...s,
+        facilitators: facilitatorsBySession.get(s.id!) ?? [],
+        approvalStatus: "pending" as const,
+      }));
     }),
 });
 

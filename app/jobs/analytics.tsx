@@ -1,13 +1,13 @@
 import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/use-colors";
 
 export default function JobAnalyticsScreen() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuthContext();
   const colors = useColors();
   const { data: allJobs, isLoading: jobsLoading } = trpc.jobs.getAllJobs.useQuery();
   const { data: metrics, isLoading: metricsLoading } = trpc.jobs.getJobMetrics.useQuery();

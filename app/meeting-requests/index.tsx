@@ -4,11 +4,11 @@ import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 
 export default function MeetingRequestsScreen() {
   const colors = useColors();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   
   const { data: myRequests, isLoading: loadingMy } = trpc.meetingRequests.getMyRequests.useQuery();
   const { data: involvingMe, isLoading: loadingInvolving } = trpc.meetingRequests.getRequestsInvolvingMe.useQuery();

@@ -4,12 +4,12 @@ import { useColors } from "@/hooks/use-colors";
 import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { useMemo } from "react";
 
 export default function MyEarningsScreen() {
   const colors = useColors();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuthContext();
 
   const { data: invoices, isLoading } = (trpc.finance as any).getInvoices.useQuery(
     { userId: user?.id },

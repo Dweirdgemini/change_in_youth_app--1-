@@ -1,7 +1,7 @@
 import { Text, View, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { router } from "expo-router";
 import { trpc } from "@/lib/trpc";
 import { RefreshControl } from "@/components/refresh-control";
@@ -10,7 +10,7 @@ import { ErrorState } from "@/components/error-state";
 import { useState } from "react";
 
 export default function TasksScreen() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuthContext();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { data: tasks, isLoading: loadingTasks, refetch, error: tasksError } = (trpc.tasks as any).getTasks.useQuery(

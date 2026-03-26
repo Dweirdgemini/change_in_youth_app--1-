@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthContext } from "@/contexts/auth-context";
 import { useColors } from "@/hooks/use-colors";
 import { Ionicons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
@@ -24,7 +24,7 @@ const ROLES = [
 
 export default function RoleSwitcherScreen() {
   const colors = useColors();
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthContext();
   const [switching, setSwitching] = useState(false);
 
   const handleRoleSwitch = async (roleId: string) => {
