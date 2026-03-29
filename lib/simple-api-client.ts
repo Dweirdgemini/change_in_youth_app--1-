@@ -3,7 +3,9 @@
  * Uses the exact format we confirmed works with direct API testing
  */
 
-const API_BASE_URL = 'https://changeinyouthapp-1-production.up.railway.app';
+import { getApiBaseUrl } from "@/constants/oauth";
+
+const API_BASE_URL = getApiBaseUrl().replace('localhost', '127.0.0.1');
 
 export interface AuthResponse {
   success: boolean;
@@ -43,18 +45,22 @@ class SimpleApiClient {
     const url = `${this.baseUrl}/api${endpoint}`;
     
     console.log(`[SimpleAPI] ${options.method} ${url}`);
+    console.log(`[SimpleAPI] Platform: ${Platform.OS}`);
+    console.log(`[SimpleAPI] Headers:`, {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    });
     
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'trpc-accept': 'application/json',
-        'x-trpc-source': 'react-native-simple',
         ...options.headers,
       },
     });
 
-    console.log(`[SimpleAPI] Response: ${response.status} ${response.statusText}`);
+    console.log(`[SimpleAPI] Response status: ${response.status} ${response.statusText}`);
+    console.log(`[SimpleAPI] Response headers:`, Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
