@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert, Platform, ActivityIndicator, KeyboardAvoidingView, TextInput } from "react-native";
 import { SmoothScrollView } from "@/components/smooth-scroll-view";
 import { ScreenContainer } from "@/components/screen-container";
@@ -9,13 +9,15 @@ import { getRoleLabel, getRoleColor } from "@/lib/role-formatter";
 import { useBranding } from "@/lib/branding-provider";
 import { Image } from "expo-image";
 import { EmptyState } from "@/components/empty-state";
+import { getApiBaseUrl } from "@/constants/oauth";
 import { setItem } from '@/lib/storage';
 
 export default function HomeScreen() {
-  const { user, isAuthenticated, loading } = useAuthContext();
+  const { user, isAuthenticated, loading, refresh } = useAuthContext();
   const { organizationName, logoUrl, primaryColor } = useBranding();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isQuickAdminLoading, setIsQuickAdminLoading] = useState(false);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
   
   // Email/password form state
   const [email, setEmail] = useState("");
@@ -30,8 +32,18 @@ export default function HomeScreen() {
     user,
     showRegister,
     isSigningIn,
-    isQuickAdminLoading
+    isQuickAdminLoading,
+    shouldRefresh
   });
+
+  // Handle auth refresh when shouldRefresh changes
+  useEffect(() => {
+    if (shouldRefresh) {
+      console.log("[HomeScreen] Triggering auth refresh");
+      refresh();
+      setShouldRefresh(false);
+    }
+  }, [shouldRefresh, refresh]);
 
   // Log form state changes
   const handleEmailChange = (text: string) => {
@@ -114,8 +126,13 @@ export default function HomeScreen() {
       await setItem('app_session_token', result.sessionToken!);
       await setItem('manus-runtime-user-info', JSON.stringify(result.user));
       
+            
       // Login successful - navigate to home
       console.log("[Login] Navigating to home screen");
+      
+      // Trigger auth context refresh for web platform
+      setShouldRefresh(true);
+      
       router.replace("/(tabs)");
     } catch (error: any) {
       console.error("[Login] Error:", error);

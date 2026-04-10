@@ -45,8 +45,9 @@ export function registerAuthRestRoutes(app: any) {
 
       // Set session cookie for web
       if (result.sessionToken) {
+        const cookieOptions = getSessionCookieOptions(req);
         res.cookie(COOKIE_NAME, result.sessionToken, {
-          ...getSessionCookieOptions(req),
+          ...cookieOptions,
           maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
         });
       }

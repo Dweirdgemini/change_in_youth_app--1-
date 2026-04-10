@@ -1,4 +1,5 @@
 import * as Api from "@/lib/_core/api";
+import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { Platform } from "react-native";
@@ -33,7 +34,24 @@ export function useAuth(options?: UseAuthOptions) {
       // Web platform: use cookie-based auth, fetch user from API
       if (Platform.OS === "web") {
         console.log("[useAuth] Web platform: fetching user from API...");
-        const apiUser = await Api.getMe();
+        
+        // For web platform, try both cookies and Authorization header
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        
+        // Add Authorization header if we have a stored token (for cross-origin requests)
+        const sessionToken = await Auth.getSessionToken();
+        if (Platform.OS === "web" && sessionToken) {
+          headers["Authorization"] = `Bearer ${sessionToken}`;
+        }
+
+        const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+          method: "GET",
+          credentials: "include",
+          headers,
+        });
+        const apiUser = await response.json();
         console.log("[useAuth] API user response:", apiUser);
 
         if (apiUser) {

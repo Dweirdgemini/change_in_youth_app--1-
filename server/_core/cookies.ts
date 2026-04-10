@@ -48,6 +48,19 @@ export function getSessionCookieOptions(
   req: Request,
 ): Pick<CookieOptions, "domain" | "httpOnly" | "path" | "sameSite" | "secure"> {
   const hostname = req.hostname;
+  const isLocalhost = LOCAL_HOSTS.has(hostname) || isIpAddress(hostname);
+
+  // For localhost development, allow cross-port cookie sharing
+  if (isLocalhost) {
+    return {
+      domain: undefined, // Don't set domain for localhost
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax", // Use lax for localhost development
+      secure: false, // Allow non-secure for localhost
+    };
+  }
+
   const domain = getParentDomain(hostname);
 
   return {
