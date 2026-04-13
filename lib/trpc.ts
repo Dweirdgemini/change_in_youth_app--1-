@@ -1,5 +1,6 @@
 import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchStreamLink } from "@trpc/client";
+// Use httpBatchLink — server uses createExpressMiddleware which does not support streaming
+  import { httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 import type { AppRouter } from "@/server/routers";
 import { getApiBaseUrl } from "@/constants/oauth";
@@ -25,7 +26,8 @@ export function createTRPCClient() {
   
   return trpc.createClient({
     links: [
-      httpBatchStreamLink({
+      // Standard batch link compatible with Express tRPC adapter
+      httpBatchLink({
         url: `${apiBaseUrl}/api/trpc`,
         // Put transformer back - removing it might cause other issues
         transformer: superjson as any,

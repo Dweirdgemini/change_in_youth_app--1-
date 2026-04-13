@@ -6,7 +6,12 @@
 import { Platform } from "react-native";
 import { getApiBaseUrl } from "@/constants/oauth";
 
-const API_BASE_URL = getApiBaseUrl().replace('localhost', '127.0.0.1');
+// Use platform-aware URL for real devices vs localhost
+const API_BASE_URL = Platform.select({
+  ios: 'http://172.20.10.3:3001', // Real iOS device
+  android: 'http://10.0.2.2:3001', // Android emulator
+  default: 'http://localhost:3001' // Web and other platforms
+});
 
 export interface AuthResponse {
   success: boolean;
@@ -65,18 +70,25 @@ class SimpleApiClient {
     console.log(`[SimpleAPI] Response headers:`, Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
+      // Read body once — response can only be consumed once
       const errorText = await response.text();
       console.log(`[SimpleAPI] Error response:`, errorText);
       
-      // Try to parse tRPC error format
+      // Try to parse tRPC error format for a meaningful message
       try {
         const errorData = JSON.parse(errorText);
         if (errorData.error && errorData.error.json && errorData.error.json.message) {
           throw new Error(errorData.error.json.message);
         }
-      } catch {
-        // Fallback to generic error
+        // If parsed but no tRPC message, throw with status
         throw new Error(`Request failed: ${response.status}`);
+      } catch (parseErr) {
+        // If JSON.parse itself failed, throw with raw text
+        if (parseErr instanceof SyntaxError) {
+          throw new Error(errorText || `Request failed: ${response.status}`);
+        }
+        // Re-throw meaningful errors from above
+        throw parseErr;
       }
     }
 

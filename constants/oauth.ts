@@ -28,15 +28,22 @@ export const API_BASE_URL = env.apiBaseUrl;
  * URL pattern: https://PORT-sandboxid.region.domain
  */
 export function getApiBaseUrl(): string {
-  // If API_BASE_URL is set, use it
+  // If API_BASE_URL is set, use it (but fix localhost for native devices)
   if (API_BASE_URL) {
-    return API_BASE_URL.replace(/\/$/, "");
+    const cleanUrl = API_BASE_URL.replace(/\/$/, "");
+    
+    // On native, localhost won't work — use machine's actual IP instead
+    if (ReactNative.Platform.OS !== "web" && 
+        (cleanUrl.includes("localhost") || cleanUrl.includes("127.0.0.1"))) {
+      return "http://172.20.10.3:3001";
+    }
+    
+    return cleanUrl;
   }
 
   // On web, derive from current hostname by replacing port 8081 with 3001
   if (ReactNative.Platform.OS === "web" && typeof window !== "undefined" && window.location) {
     const { protocol, hostname } = window.location;
-    // Pattern: 8081-sandboxid.region.domain -> 3001-sandboxid.region.domain
     const apiHostname = hostname.replace(/^8081-/, "3001-");
     if (apiHostname !== hostname) {
       return `${protocol}//${apiHostname}`;

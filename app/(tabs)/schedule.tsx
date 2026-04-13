@@ -283,7 +283,8 @@ export default function ScheduleScreen() {
                 }`}
               >
                 Completed
-              </Text>            </TouchableOpacity>
+              </Text>
+            </TouchableOpacity>
           </View>
 
           {/* Acceptance Status Filter */}

@@ -23,7 +23,8 @@ export const tasksRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      const [task] = await db.insert(tasks).values({
+      // MySQL insert returns a ResultSetHeader — access insertId directly
+      const [result] = await db.insert(tasks).values({
         title: input.title,
         description: input.description,
         projectId: input.projectId,
@@ -33,9 +34,8 @@ export const tasksRouter = router({
         priority: input.priority,
         status: input.status,
         dueDate: input.dueDate,
-      } as any);
-
-      return { success: true, taskId: (task as any).insertId };
+      } as any) as any;
+      return { success: true, taskId: result?.insertId ?? null };
     }),
 
   // Get all tasks (admin/finance can see all, others see only assigned to them)

@@ -404,8 +404,12 @@ export default function HomeScreen() {
                     }
                     setIsQuickAdminLoading(true);
                   try {
-                    const apiUrl = process.env.EXPO_PUBLIC_API_URL || 
-                      (Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://172.20.10.3:3000');
+                    // Use platform-aware URL for real devices vs localhost
+                    const apiUrl = Platform.select({
+                      ios: 'http://172.20.10.3:3001', // Real iOS device
+                      android: 'http://10.0.2.2:3001', // Android emulator
+                      default: 'http://localhost:3001' // Web and other platforms
+                    });
                     
                     console.log("[QuickAdmin] Using API URL:", apiUrl);
                     console.log("[QuickAdmin] Environment:", {
