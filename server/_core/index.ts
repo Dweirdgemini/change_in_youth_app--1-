@@ -75,7 +75,7 @@ async function startServer() {
       res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
       res.header(
         "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-dev-mode"
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-dev-mode, x-trpc-source, trpc-accept, trpc-origin, trpc-version, trpc-content-type, trpc-batch-mode, trpc-envelopes, X-CSRF-Token, X-API-Key, Cache-Control, Pragma, If-Modified-Since, ETag, X-Total-Count"
       );
       res.header("Access-Control-Allow-Credentials", "true");
       res.header("Access-Control-Max-Age", "86400");
