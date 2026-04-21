@@ -62,10 +62,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 /**
  * Generate JWT token for user session
  */
-export async function generateSessionToken(userId: number, email: string): Promise<string> {
+export async function generateSessionToken(userId: number, email: string, openId: string, name: string): Promise<string> {
   const payload = {
     userId,
     email,
+    openId, // Include actual database openId
+    name, // Include user name
     loginMethod: "email",
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + (ONE_YEAR_MS / 1000),
@@ -142,7 +144,7 @@ export async function authenticateUser(credentials: LoginRequest): Promise<AuthR
     }
     console.log("about to verify password")
     // Generate session token
-    const sessionToken = await generateSessionToken(user.id, user.email || "");
+    const sessionToken = await generateSessionToken(user.id, user.email || "", user.openId, user.name || "");
 
     // Update last sign in
     await db
@@ -252,7 +254,7 @@ export async function registerUser(userData: RegisterRequest): Promise<AuthRespo
       .limit(1);
 
     // Generate session token
-    const sessionToken = await generateSessionToken(newUser.id, email);
+    const sessionToken = await generateSessionToken(newUser.id, email, newUser.openId, newUser.name || "");
 
     const userResponse = {
       id: newUser.id,
