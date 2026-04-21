@@ -3,6 +3,7 @@
  * Uses the exact format we confirmed works with direct API testing
  */
 
+import { Platform } from "react-native";
 import { getApiBaseUrl } from "@/constants/oauth";
 
 const API_BASE_URL = getApiBaseUrl().replace('localhost', '127.0.0.1');
@@ -53,6 +54,7 @@ class SimpleApiClient {
     
     const response = await fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -99,6 +101,7 @@ class SimpleApiClient {
         body: JSON.stringify(credentials),
       });
 
+      
       return result;
     } catch (error: any) {
       console.error('[SimpleAPI] Login error:', error);

@@ -280,7 +280,19 @@ class SDKServer {
     }
 
     const finalToken = token || sessionCookie;
-    const session = await this.verifySession(finalToken);
+    
+    // For web platform, try both session cookie and Authorization header
+    let session;
+    if (finalToken) {
+      session = await this.verifySession(finalToken);
+    } else if (req.headers.origin) {
+      // For cross-origin web requests, try Authorization header as fallback
+      const authHeader = req.headers.authorization || req.headers.Authorization;
+      if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+        const bearerToken = authHeader.slice("Bearer ".length).trim();
+        session = await this.verifySession(bearerToken);
+      }
+    }
 
     if (!session) {
       throw ForbiddenError("Invalid session cookie");
