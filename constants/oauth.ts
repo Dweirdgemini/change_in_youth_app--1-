@@ -23,35 +23,56 @@ export const OWNER_NAME = env.ownerName;
 export const API_BASE_URL = env.apiBaseUrl;
 
 /**
- * Get the API base URL, deriving from current hostname if not set.
+ * Get API base URL with Expo-compatible IP auto-detection.
  * Metro runs on 8081, API server runs on 3000.
- * URL pattern: https://PORT-sandboxid.region.domain
+ * Uses Metro Bundler's host URI to fix "Network request failed" errors on physical devices.
  */
 export function getApiBaseUrl(): string {
-  // If API_BASE_URL is set, use it (but fix localhost for native devices)
-  if (API_BASE_URL) {
-    const cleanUrl = API_BASE_URL.replace(/\/$/, "");
-    
-    // On native, localhost won't work — use machine's actual IP instead
-    if (ReactNative.Platform.OS !== "web" && 
-        (cleanUrl.includes("localhost") || cleanUrl.includes("127.0.0.1"))) {
-      return "http://172.20.10.3:3001";
-    }
-    
-    return cleanUrl;
+  console.log('[getApiBaseUrl] Platform:', ReactNative.Platform.OS);
+  console.log('[getApiBaseUrl] API_BASE_URL env:', API_BASE_URL);
+
+  if (ReactNative.Platform.OS !== "web") {
+    const url = "http://192.168.1.10:3001";
+    console.log('[getApiBaseUrl] Native resolved URL:', url);
+    return url;
   }
 
-  // On web, derive from current hostname by replacing port 8081 with 3001
-  if (ReactNative.Platform.OS === "web" && typeof window !== "undefined" && window.location) {
-    const { protocol, hostname } = window.location;
-    const apiHostname = hostname.replace(/^8081-/, "3001-");
-    if (apiHostname !== hostname) {
-      return `${protocol}//${apiHostname}`;
-    }
-  }
+  const url = API_BASE_URL || "https://changeinyouthapp-1-production.up.railway.app";
+  console.log('[getApiBaseUrl] Web resolved URL:', url);
+  return url;
+}
 
-  // Fallback to production Railway backend
-  return "https://changeinyouthapp-1-production.up.railway.app";
+/**
+ * Get Metro Bundler's host URI for IP auto-detection.
+ * This fixes "Network request failed" errors on physical devices and Expo Go.
+ */
+function getMetroHostUri(): string | null {
+  try {
+    const Constants = require('expo-constants').default ?? require('expo-constants');
+    
+    // Modern Expo SDK (49+)
+    const hostUri = 
+      Constants?.expoGoConfig?.debuggerHost ??
+      Constants?.expoConfig?.hostUri ??
+      Constants?.manifest2?.extra?.expoGo?.debuggerHost ??
+      Constants?.manifest?.debuggerHost ??
+      Constants?.manifest?.hostUri ??
+      null;
+
+    if (hostUri) {
+      const ip = hostUri.split(':')[0];
+      console.log('[API] Metro host detected:', ip);
+      return hostUri;
+    }
+
+    // Temporary debug log — remove after fix is confirmed
+    const Constants2 = require('expo-constants').default ?? require('expo-constants');
+    console.warn('[API] No Metro host found. Constants dump:', JSON.stringify(Constants2, null, 2));
+    return null;
+  } catch (error) {
+    console.warn('[API] Failed to get Metro host:', error);
+    return null;
+  }
 }
 
 export const SESSION_TOKEN_KEY = "app_session_token";

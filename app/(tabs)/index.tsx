@@ -110,21 +110,34 @@ export default function HomeScreen() {
         password: password 
       });
       
+      // Extract actual data from nested result (tRPC format: { result: {...} })
+      const responseData = result.result || result;
+      
       console.log("[Login] Simple API call successful", { 
-        result,
-        hasSessionToken: !!result.sessionToken,
-        hasUser: !!result.user,
-        userId: result.user?.id,
-        userEmail: result.user?.email
+        responseData,
+        hasSessionToken: !!responseData.sessionToken,
+        hasUser: !!responseData.user,
+        userId: responseData.user?.id,
+        userEmail: responseData.user?.email
       });
       
-      if (!result.success || !result.user || !result.sessionToken) {
-        throw new Error(result.error || "Login failed");
+      // DEBUG: Log full response structure
+      console.log("[Login] FULL responseData:", JSON.stringify(responseData, null, 2));
+      
+      if (!responseData.success || !responseData.user || !responseData.sessionToken) {
+        console.error("[Login] Login response missing required fields:", {
+          success: responseData.success,
+          hasUser: !!responseData.user,
+          hasSessionToken: !!responseData.sessionToken,
+          error: responseData.error,
+          fullResult: result
+        });
+        throw new Error(responseData.error || "Login failed - server response incomplete");
       }
       
       // Save session token and user info to storage for native auth
-      await setItem('app_session_token', result.sessionToken!);
-      await setItem('manus-runtime-user-info', JSON.stringify(result.user));
+      await setItem('app_session_token', responseData.sessionToken!);
+      await setItem('manus-runtime-user-info', JSON.stringify(responseData.user));
       
             
       // Login successful - navigate to home

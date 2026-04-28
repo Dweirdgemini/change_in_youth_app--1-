@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Platform, Alert } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { trpc } from "@/lib/trpc";
 import { router } from "expo-router";
@@ -41,11 +41,24 @@ export default function CreateMeetingRequestScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || selectedParticipants.length === 0) {
+    // FIX: Added validation feedback for mobile users instead of silent failure
+    if (!title.trim()) {
+      Alert.alert("Missing Information", "Please enter a meeting title");
+      return;
+    }
+    
+    if (selectedParticipants.length === 0) {
+      Alert.alert("Missing Information", "Please select at least one participant");
       return;
     }
 
     try {
+      console.log('[CreateMeetingRequest] Submitting meeting:', {
+        title: title.trim(),
+        participantCount: selectedParticipants.length,
+        date: proposedDate.toISOString()
+      });
+      
       await createMutation.mutateAsync({
         title: title.trim(),
         description: description.trim() || undefined,
@@ -54,9 +67,16 @@ export default function CreateMeetingRequestScreen() {
         participantIds: selectedParticipants,
       });
       
-      router.back();
-    } catch (error) {
-      console.error("Failed to create meeting request:", error);
+      console.log('[CreateMeetingRequest] Meeting created successfully');
+      
+      // FIX: Show success feedback before navigating back
+      Alert.alert("Success", "Meeting request created successfully!", [
+        { text: "OK", onPress: () => router.back() }
+      ]);
+    } catch (error: any) {
+      console.error("[CreateMeetingRequest] Failed to create meeting request:", error);
+      // FIX: Show error alert to user on mobile
+      Alert.alert("Error", error?.message || "Failed to create meeting request. Please try again.");
     }
   };
 
@@ -210,7 +230,23 @@ export default function CreateMeetingRequestScreen() {
             <Text className="text-base font-semibold text-foreground mb-2">
               Participants * ({selectedParticipants.length} selected)
             </Text>
-            {users && users.length > 0 ? (
+            {isLoading ? (
+              <View className="bg-surface rounded-xl p-6 items-center border border-border">
+                <ActivityIndicator size="small" color={colors.primary} />
+                <Text className="text-sm text-muted mt-2">Loading users...</Text>
+              </View>
+            ) : error ? (
+              // FIX: Show error state when users fail to load on mobile
+              <View className="bg-surface rounded-xl p-6 items-center border border-border">
+                <Text className="text-sm text-error leading-relaxed">Failed to load users</Text>
+                <TouchableOpacity 
+                  onPress={() => window.location?.reload?.()}
+                  className="mt-2 bg-primary px-4 py-2 rounded-lg"
+                >
+                  <Text className="text-background text-sm font-semibold">Retry</Text>
+                </TouchableOpacity>
+              </View>
+            ) : users && users.length > 0 ? (
               <View className="gap-2">
                 {users.map((user) => (
                   <TouchableOpacity

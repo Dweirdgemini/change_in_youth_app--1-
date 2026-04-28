@@ -7,11 +7,7 @@ import { Platform } from "react-native";
 import { getApiBaseUrl } from "@/constants/oauth";
 
 // Use platform-aware URL for real devices vs localhost
-const API_BASE_URL = Platform.select({
-  ios: 'http://172.20.10.3:3001', // Real iOS device
-  android: 'http://10.0.2.2:3001', // Android emulator
-  default: 'http://localhost:3001' // Web and other platforms
-});
+const API_BASE_URL = getApiBaseUrl();
 
 export interface AuthResponse {
   success: boolean;
@@ -26,6 +22,8 @@ export interface AuthResponse {
   };
   sessionToken?: string;
   error?: string;
+  // tRPC wraps response in result field
+  result?: AuthResponse;
 }
 
 export interface LoginRequest {
@@ -44,7 +42,7 @@ class SimpleApiClient {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = API_BASE_URL;
+    this.baseUrl = getApiBaseUrl();
   }
 
   private async request<T>(endpoint: string, options: RequestInit): Promise<T> {
