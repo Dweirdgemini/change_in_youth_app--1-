@@ -28,7 +28,8 @@ export function ScreenWithBackButton({
   ...props
 }: ScreenWithBackButtonProps) {
   return (
-    <ScreenContainer {...props}>
+    // FIX: Pass showBackButton={false} to prevent ScreenContainer from rendering duplicate back button
+    <ScreenContainer {...props} showBackButton={false}>
       {showBackButton && (
         <BackButton
           onPress={onBackPress}

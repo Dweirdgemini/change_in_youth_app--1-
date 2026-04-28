@@ -16,10 +16,11 @@ export default function CreateTaskScreen() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [selectedAssignee, setSelectedAssignee] = useState<number | null>(null);
 
-  const { data: projects, isLoading: loadingProjects } = (trpc.finance as any).getProjects.useQuery();
-  const { data: users, isLoading: loadingUsers } = (trpc.finance as any).getAllUsers.useQuery();
+  // FIX: Use proper tRPC hook pattern without optional chaining to ensure mobile compatibility
+  const { data: projects, isLoading: loadingProjects } = trpc.finance.getProjects.useQuery();
+  const { data: users, isLoading: loadingUsers } = trpc.finance.getAllUsers.useQuery();
   
-  const createTask = (trpc as any).tasks?.createTask?.useMutation();
+  const createTask = trpc.tasks.createTask.useMutation();
 
   const handleCreateTask = async () => {
     if (!title.trim()) {
