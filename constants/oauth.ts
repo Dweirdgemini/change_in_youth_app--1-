@@ -24,21 +24,37 @@ export const API_BASE_URL = env.apiBaseUrl;
 
 /**
  * Get API base URL with Expo-compatible IP auto-detection.
- * Metro runs on 8081, API server runs on 3000.
+ * Metro runs on 8081, API server runs on 3001 (with fallback to 3002).
  * Uses Metro Bundler's host URI to fix "Network request failed" errors on physical devices.
  */
 export function getApiBaseUrl(): string {
   console.log('[getApiBaseUrl] Platform:', ReactNative.Platform.OS);
   console.log('[getApiBaseUrl] API_BASE_URL env:', API_BASE_URL);
 
-  if (ReactNative.Platform.OS !== "web") {
-    const url = "http://192.168.1.10:3001";
-    console.log('[getApiBaseUrl] Native resolved URL:', url);
+  if (ReactNative.Platform.OS === "web") {
+    const url = API_BASE_URL || "https://changeinyouthapp-1-production.up.railway.app";
+    console.log('[getApiBaseUrl] Web resolved URL:', url);
     return url;
   }
 
-  const url = API_BASE_URL || "https://changeinyouthapp-1-production.up.railway.app";
-  console.log('[getApiBaseUrl] Web resolved URL:', url);
+  // Native: detect Metro host IP dynamically
+  const metroHost = getMetroHostUri();
+  const hostIp = metroHost ? metroHost.split(':')[0] : "192.168.1.10";
+  console.log('[getApiBaseUrl] Metro host detected:', metroHost, 'IP:', hostIp);
+  
+  // Use environment variable for port, default to 3001
+  const port = process.env.EXPO_PUBLIC_API_PORT || "3001";
+  console.log('[getApiBaseUrl] Using port:', port);
+  
+  // Android emulator special case (10.0.2.2 maps to host machine)
+  if (ReactNative.Platform.OS === "android") {
+    const url = `http://10.0.2.2:${port}`;
+    console.log('[getApiBaseUrl] Android emulator resolved URL:', url);
+    return url;
+  }
+  
+  const url = `http://${hostIp}:${port}`;
+  console.log('[getApiBaseUrl] Native resolved URL:', url);
   return url;
 }
 
