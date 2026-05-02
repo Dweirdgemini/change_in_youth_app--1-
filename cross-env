@@ -1,0 +1,63 @@
+env: load .env
+env: export DATABASE_URL JWT_SECRET PORT ALLOWED_ORIGINS
+Starting project at /home/dev_ng/Downloads/change_in_youth_app (1)
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+React Compiler enabled
+Starting Metro Bundler
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+App Config: {
+  name: 'Change In Youth',
+  slug: 'change-in-youth-app',
+  scheme: 'changein',
+  logoUrl: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663243745579/qyEuSLNsHnIouZDk.png'
+}
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 70.6% (1108/1319)
+λ node_modules/expo-router/node/render.js ▓░░░░░░░░░░░░░░░ 10.9% (118/358)

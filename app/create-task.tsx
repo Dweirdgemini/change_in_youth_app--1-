@@ -17,13 +17,33 @@ export default function CreateTaskScreen() {
   const [selectedAssignee, setSelectedAssignee] = useState<number | null>(null);
 
   // FIX: Use proper tRPC hook pattern without optional chaining to ensure mobile compatibility
-  const { data: projects, isLoading: loadingProjects } = trpc.finance.getProjects.useQuery();
-  const { data: users, isLoading: loadingUsers } = trpc.finance.getAllUsers.useQuery();
+  const { data: projects, isLoading: loadingProjects, error: projectsError } = trpc.finance.getProjects.useQuery();
+  const { data: users, isLoading: loadingUsers, error: usersError } = trpc.finance.getAllUsers.useQuery();
   
-  const createTask = trpc.tasks.createTask.useMutation();
+  const createTask = trpc.tasks.createTask.useMutation({
+    onError: (error) => {
+      console.error('[CreateTask] Mutation error:', error);
+    }
+  });
+
+  // DEBUG: Log hook states
+  console.log('[CreateTask] Hook states:', {
+    hasProjects: !!projects,
+    hasUsers: !!users,
+    loadingProjects,
+    loadingUsers,
+    projectsError: projectsError?.message,
+    usersError: usersError?.message,
+    mutationStatus: createTask.status,
+    isAuthenticated,
+    userId: user?.id,
+  });
 
   const handleCreateTask = async () => {
+    console.log('[CreateTask] handleCreateTask called', { title: title.trim(), isAuthenticated, userId: user?.id });
+    
     if (!title.trim()) {
+      console.log('[CreateTask] Validation failed: empty title');
       if (Platform.OS === 'web') {
         alert('Please enter a task title');
       } else {
@@ -32,15 +52,27 @@ export default function CreateTaskScreen() {
       return;
     }
 
+    if (!isAuthenticated || !user?.id) {
+      console.log('[CreateTask] Validation failed: not authenticated', { isAuthenticated, userId: user?.id });
+      Alert.alert('Error', 'You must be logged in to create a task');
+      return;
+    }
+
+    const taskData = {
+      title: title.trim(),
+      description: description.trim() || null,
+      priority,
+      projectId: selectedProject,
+      assignedTo: selectedAssignee || user?.id,
+      status: "pending" as const,
+    };
+    
+    console.log('[CreateTask] Submitting task:', JSON.stringify(taskData, null, 2));
+
     try {
-      await createTask.mutateAsync({
-        title: title.trim(),
-        description: description.trim() || null,
-        priority,
-        projectId: selectedProject,
-        assignedTo: selectedAssignee || user?.id,
-        status: "pending",
-      });
+      console.log('[CreateTask] Calling mutateAsync...');
+      const result = await createTask.mutateAsync(taskData);
+      console.log('[CreateTask] Task created successfully:', result);
 
       if (Platform.OS === 'web') {
         alert('Task created successfully!');
@@ -49,12 +81,21 @@ export default function CreateTaskScreen() {
       }
       
       router.back();
-    } catch (error) {
-      console.error('Create task error:', error);
+    } catch (error: any) {
+      console.error('[CreateTask] Error creating task:', error);
+      console.error('[CreateTask] Error details:', {
+        message: error?.message,
+        code: error?.code,
+        data: error?.data,
+        shape: error?.shape,
+      });
+      
+      const errorMessage = error?.message || error?.data?.message || 'Failed to create task. Please try again.';
+      
       if (Platform.OS === 'web') {
-        alert('Failed to create task. Please try again.');
+        alert(`Error: ${errorMessage}`);
       } else {
-        Alert.alert('Error', 'Failed to create task. Please try again.');
+        Alert.alert('Error', errorMessage);
       }
     }
   };

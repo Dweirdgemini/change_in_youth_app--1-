@@ -97,17 +97,13 @@ export default function RootLayout() {
             <Stack.Screen
               name="create-task"
               options={{
-                headerShown: true,
-                title: "Create Task",
-                headerBackTitle: "Back",
+                headerShown: false,
               }}
             />
             <Stack.Screen
               name="create-session"
               options={{
-                headerShown: true,
-                title: "Create Session",
-                headerBackTitle: "Back",
+                headerShown: false,
               }}
             />
             <Stack.Screen

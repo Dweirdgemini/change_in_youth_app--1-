@@ -205,6 +205,10 @@ async function startServer() {
     log.warn({ preferredPort, actualPort: port }, "Preferred port unavailable, using alternative");
   }
 
+  // Export port for frontend to detect dynamically
+  process.env.API_PORT = port.toString();
+  log.info({ apiPort: port }, "API_PORT exported for frontend detection");
+
   server.listen(port, "0.0.0.0", () => {
     log.info({ port, host: "0.0.0.0" }, "Server listening on all interfaces");
   });
